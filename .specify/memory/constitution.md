@@ -1,50 +1,48 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: N/A → 1.0.0 (initial constitution)
+Modified principles: N/A (all new)
+Added sections: Core Principles (5 principles), Development Workflow, Governance
+Removed sections: N/A
+Templates requiring updates:
+  ✅ plan-template.md - Constitution Check section already references constitution
+  ✅ spec-template.md - No direct constitution references, structure aligns
+  ✅ tasks-template.md - No direct constitution references, structure aligns
+  ✅ checklist-template.md - No direct constitution references
+  ✅ agent-file-template.md - No direct constitution references
+Follow-up TODOs: None
+-->
+
+# git-tools Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Library-First
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Every tool starts as a standalone library. Libraries MUST be self-contained, independently testable, and documented. Each library MUST have a clear purpose - no organizational-only libraries. Tools are composed from libraries, ensuring reusability and maintainability.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. CLI Interface
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Every library exposes functionality via a command-line interface. Text in/out protocol: stdin/args → stdout, errors → stderr. Support both JSON and human-readable output formats. CLI tools MUST be composable and scriptable, following Unix philosophy principles.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Test-First (NON-NEGOTIABLE)
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+Test-Driven Development is mandatory. Process: Tests written → User approved → Tests fail → Then implement. Red-Green-Refactor cycle strictly enforced. All new functionality MUST have tests before implementation begins.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Integration Testing
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Focus areas requiring integration tests: New tool contract tests, Contract changes, Git repository operations, Inter-tool communication, Shared data formats. Integration tests MUST validate real git operations in isolated test repositories.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Observability & Versioning
+
+Text I/O ensures debuggability. Structured logging required for all operations. Semantic versioning: MAJOR.MINOR.PATCH format. Breaking changes require MAJOR version bump and migration documentation. Tools MUST log operations at appropriate levels (DEBUG, INFO, WARN, ERROR).
+
+## Development Workflow
+
+All feature development follows the speckit workflow: specification → plan → tasks → implementation. Constitution compliance MUST be verified at plan stage (Constitution Check gate). Code reviews MUST verify constitution compliance. Complexity MUST be justified in plan.md Complexity Tracking section.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices. Amendments require documentation, approval rationale, and migration plan if principles change. All PRs and reviews MUST verify compliance with constitution principles. Use `.specify/templates/` for runtime development guidance. Version changes follow semantic versioning: MAJOR for backward-incompatible changes, MINOR for new principles or sections, PATCH for clarifications and typo fixes.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-28 | **Last Amended**: 2025-12-28
