@@ -30,10 +30,10 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 **Purpose**: Project initialization and basic structure.
 
-- [ ] T001 Create Python project structure per implementation plan (`src/github_tools/`, `tests/`, `pyproject.toml`, `requirements.txt`, `requirements-dev.txt`)
-- [ ] T002 Initialize test framework with `pytest` configuration in `pytest.ini` and `tests/__init__.py`
-- [ ] T003 [P] Configure linting and formatting tools (`ruff`, `black`) and add settings to `pyproject.toml`
-- [ ] T004 [P] Configure logging basics and log format helpers in `src/github_tools/utils/logging.py`
+- [x] T001 Create Python project structure per implementation plan (`src/github_tools/`, `tests/`, `pyproject.toml`, `requirements.txt`, `requirements-dev.txt`)
+- [x] T002 Initialize test framework with `pytest` configuration in `pytest.ini` and `tests/__init__.py`
+- [x] T003 [P] Configure linting and formatting tools (`ruff`, `black`) and add settings to `pyproject.toml`
+- [x] T004 [P] Configure logging basics and log format helpers in `src/github_tools/utils/logging.py`
 
 ---
 
@@ -43,9 +43,9 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Define core domain models (`Developer`, `Repository`, `Contribution`, `TimePeriod`) in `src/github_tools/models/` per `data-model.md`
-- [ ] T005a [P] Extend `Developer` model in `src/github_tools/models/developer.py` with `is_internal` boolean field (True if member of organization/enterprise, False if outside collaborator)
-- [ ] T006 Implement configuration loader using `pydantic` in `src/github_tools/utils/config.py` (GitHub token, org, base URL, cache paths)
+- [x] T005 Define core domain models (`Developer`, `Repository`, `Contribution`, `TimePeriod`) in `src/github_tools/models/` per `data-model.md`
+- [x] T005a [P] Extend `Developer` model in `src/github_tools/models/developer.py` with `is_internal` boolean field (True if member of organization/enterprise, False if outside collaborator)
+- [x] T006 Implement configuration loader using `pydantic` in `src/github_tools/utils/config.py` (GitHub token, org, base URL, cache paths)
 - [ ] T007 Implement file-based cache utilities (JSON/CSV, optional SQLite hooks) in `src/github_tools/utils/cache.py`
 - [ ] T008 Implement GitHub API client wrapper using `PyGithub` or `github3.py` in `src/github_tools/api/client.py`
 - [ ] T008a [P] Add organization membership checking methods to API client in `src/github_tools/api/client.py` (check if user is member of organization/enterprise vs outside collaborator with repository-specific access)
