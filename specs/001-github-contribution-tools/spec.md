@@ -10,6 +10,11 @@
 ### Session 2025-12-28
 
 - Q: What output formats should PR summary reports provide for stakeholders and analytics? → A: Both human-readable (Markdown/PDF) and machine-readable (JSON/CSV) outputs
+- Q: How should collected contribution data be stored between runs? → A: Local file-based cache per organization/workspace (e.g., JSON/SQLite on disk)
+- Q: How should GitHub authentication credentials be provided and stored? → A: Environment variables (e.g., GITHUB_TOKEN) with documented secure setup
+- Q: What is the default privacy posture for private organization data and developer identities? → A: Treat outputs as internal-only by default; handle as sensitive data
+- Q: How should GitHub API rate limits and long-running pulls be handled? → A: Retry with backoff plus resumable checkpoints for partial data pulls
+- Q: How should commits with author emails that do not map cleanly to GitHub users be handled? → A: Use commit author string as-is; no additional mapping
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -144,6 +149,11 @@ Engineering managers need to identify trends and anomalies in contribution patte
 - **FR-020**: System MUST only include pull requests merged to main branch in PR summary reports (exclude PRs merged to other branches)
 - **FR-021**: System MUST organize PR summaries chronologically or by repository in multi-repository reports
 - **FR-022**: System MUST provide PR summary reports in both human-readable formats (e.g., Markdown/PDF/HTML) and machine-readable formats (e.g., JSON/CSV)
+- **FR-023**: For identity resolution, when author email does not map to a GitHub user, system uses the commit author string as-is without additional mapping
+
+### Non-Functional Requirements
+
+- **NFR-001**: Treat contribution analytics outputs as internal-only by default; documentation MUST emphasize handling as sensitive data, with any externally shareable views requiring explicit opt-in/configuration
 
 ### Key Entities *(include if feature involves data)*
 
