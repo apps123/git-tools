@@ -70,6 +70,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - [ ] T013 [P] [US1] Add contract test for developer activity report output schema in `tests/contract/test_developer_report_contract.py`
 - [ ] T014 [P] [US1] Add integration test for end-to-end developer report flow in `tests/integration/test_developer_report_flow.py`
 - [ ] T015 [P] [US1] Add unit tests for developer metric aggregation logic in `tests/unit/test_developer_analyzer.py`
+- [ ] T015a [P] [US1] Add targeted integration test for attribution accuracy (≥95%) using curated sample dataset in `tests/integration/test_attribution_accuracy.py` with ground-truth contributor mappings in `tests/integration/fixtures/attribution_ground_truth.json`
 
 ### Implementation for User Story 1
 
@@ -160,6 +161,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - [ ] T043 [P] [US5] Add contract test for trend/anomaly report structure in `tests/contract/test_trends_report_contract.py`
 - [ ] T044 [P] [US5] Add integration test for trends/anomalies across multiple periods in `tests/integration/test_trends_flow.py`
 - [ ] T045 [P] [US5] Add unit tests for anomaly detection thresholds and trend calculations in `tests/unit/test_anomaly_detector.py`
+- [ ] T045a [P] [US5] Add targeted integration test for anomaly detection recall (≥80%) using curated sample dataset in `tests/integration/test_anomaly_recall.py` with known anomaly events (drops/spikes >50%) in `tests/integration/fixtures/anomaly_ground_truth.json`
 
 ### Implementation for User Story 5
 
@@ -216,7 +218,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - Setup tasks T003 and T004 can run in parallel after T001–T002.  
 - Foundational tasks T005a, T007–T009, T012, and T012a can proceed in parallel where they touch different files (T005a extends Developer model, T008a extends API client, T010a adds classification logic, T012a adds tests).  
 - Within each user story:
-  - Contract, integration, and unit tests marked [P] (e.g., T013–T015, T022–T024) can be created in parallel.
+  - Contract, integration, and unit tests marked [P] (e.g., T013–T015a, T022–T024, T043–T045a) can be created in parallel.
   - Collector/analyzer implementations marked [P] (e.g., T016, T017, T025, T032, T038, T039, T046) can be developed in parallel across different modules.
 - Different user stories (US2, US3, US4, US5) can be developed in parallel after Phase 2, as long as their file paths do not conflict.
 
@@ -273,14 +275,15 @@ With multiple developers:
 
 ## Summary Metrics
 
-- **Total Tasks**: 57 (4 new foundational tasks added for internal/external contributor classification)  
+- **Total Tasks**: 59 (4 foundational classification tasks + 2 quality validation test tasks)  
 - **Tasks per User Story**:
-  - US1: 9 tasks (T013–T021)  
+  - US1: 10 tasks (T013–T015a, T016–T021) including attribution accuracy validation  
   - US2: 7 tasks (T022–T028)  
   - US3: 7 tasks (T029–T034)  
   - US4: 8 tasks (T035–T042)  
-  - US5: 6 tasks (T043–T048)  
-- **Foundational Classification Tasks**: 4 tasks (T005a, T008a, T010a, T012a) for internal/external contributor identification  
+  - US5: 7 tasks (T043–T045a, T046–T048) including anomaly detection recall validation  
+- **Foundational Classification Tasks**: 4 tasks (T005a, T008a, T010a, T012a) for internal/external contributor identification
+- **Quality Validation Tests**: 2 tasks (T015a for attribution accuracy ≥95%, T045a for anomaly recall ≥80%) using curated sample datasets  
 - **Parallelizable Tasks ([P])**: Majority of tests and core analyzers/collectors (explicitly marked).  
 - **Suggested MVP Scope**: Phases 1–3 (Setup, Foundational, User Story 1).
 
