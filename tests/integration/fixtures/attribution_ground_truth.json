@@ -1,0 +1,54 @@
+{
+  "description": "Ground truth data for attribution accuracy testing",
+  "test_cases": [
+    {
+      "contribution_id": "commit_abc123",
+      "expected_developer": "alice",
+      "contribution_type": "commit",
+      "repository": "myorg/repo1",
+      "timestamp": "2024-12-01T10:00:00Z",
+      "author_email": "alice@example.com",
+      "author_name": "Alice Developer",
+      "github_username": "alice"
+    },
+    {
+      "contribution_id": "commit_def456",
+      "expected_developer": "bob",
+      "contribution_type": "commit",
+      "repository": "myorg/repo1",
+      "timestamp": "2024-12-02T11:00:00Z",
+      "author_email": "bob@example.com",
+      "author_name": "Bob Contributor",
+      "github_username": "bob"
+    },
+    {
+      "contribution_id": "pr_42",
+      "expected_developer": "alice",
+      "contribution_type": "pull_request",
+      "repository": "myorg/repo1",
+      "timestamp": "2024-12-03T14:00:00Z",
+      "creator_username": "alice",
+      "github_username": "alice"
+    },
+    {
+      "contribution_id": "review_1",
+      "expected_developer": "bob",
+      "contribution_type": "review",
+      "repository": "myorg/repo1",
+      "timestamp": "2024-12-04T15:00:00Z",
+      "reviewer_username": "bob",
+      "github_username": "bob"
+    },
+    {
+      "contribution_id": "issue_10",
+      "expected_developer": "alice",
+      "contribution_type": "issue",
+      "repository": "myorg/repo1",
+      "timestamp": "2024-12-05T16:00:00Z",
+      "creator_username": "alice",
+      "github_username": "alice"
+    }
+  ],
+  "expected_accuracy_threshold": 0.95
+}
+
