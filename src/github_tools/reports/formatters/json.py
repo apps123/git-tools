@@ -54,4 +54,16 @@ class JSONFormatter:
             JSON string
         """
         return json.dumps(report_data, indent=2, default=str)
+    
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as JSON.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            JSON string
+        """
+        return json.dumps(report_data, indent=2, default=str)
 

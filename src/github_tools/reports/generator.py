@@ -339,4 +339,72 @@ class ReportGenerator:
             },
             "departments": departments,
         }
+    
+    def generate_pr_summary_report(
+        self,
+        summaries: List[dict],
+        time_period: TimePeriod,
+        format: str = "markdown",
+    ) -> str:
+        """
+        Generate PR summary report.
+        
+        Args:
+            summaries: List of PR summary dictionaries
+            time_period: Time period for the report
+            format: Output format (json, markdown, csv)
+        
+        Returns:
+            Formatted report string
+        """
+        report_data = self._build_pr_summary_report_data(summaries, time_period)
+        
+        if format == "json":
+            return self.json_formatter.format_pr_summary_report(report_data)
+        elif format == "csv":
+            return self.csv_formatter.format_pr_summary_report(report_data)
+        elif format == "markdown":
+            return self.markdown_formatter.format_pr_summary_report(report_data)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
+    
+    def _build_pr_summary_report_data(
+        self,
+        summaries: List[dict],
+        time_period: TimePeriod,
+    ) -> Dict[str, Any]:
+        """
+        Build PR summary report data structure.
+        
+        Args:
+            summaries: List of PR summary dictionaries
+            time_period: Time period for the report
+        
+        Returns:
+            Report data dictionary
+        """
+        # Group by repository
+        repos = {}
+        for summary in summaries:
+            repo = summary["repository"]
+            if repo not in repos:
+                repos[repo] = []
+            repos[repo].append(summary)
+        
+        return {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "tool_version": __version__,
+                "period": {
+                    "start_date": time_period.start_date.isoformat(),
+                    "end_date": time_period.end_date.isoformat(),
+                },
+            },
+            "summary": {
+                "total_prs": len(summaries),
+                "repositories": len(repos),
+            },
+            "pull_requests": summaries,
+            "by_repository": repos,
+        }
 

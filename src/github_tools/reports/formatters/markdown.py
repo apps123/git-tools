@@ -89,6 +89,68 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        prs = report_data["pull_requests"]
+        by_repo = report_data.get("by_repository", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Pull Request Summary Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total PRs: {summary['total_prs']}")
+        lines.append(f"- Repositories: {summary['repositories']}")
+        lines.append("")
+        
+        # Group by repository
+        if by_repo:
+            for repo_name, repo_prs in sorted(by_repo.items()):
+                lines.append(f"## {repo_name}")
+                lines.append("")
+                
+                for pr in repo_prs:
+                    lines.append(f"### {pr['title']}")
+                    lines.append("")
+                    lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                    lines.append("")
+                    lines.append(pr['summary'])
+                    lines.append("")
+        else:
+            # List all PRs
+            lines.append("## Pull Requests")
+            lines.append("")
+            for pr in prs:
+                lines.append(f"### {pr['title']} ({pr['repository']})")
+                lines.append("")
+                lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                lines.append("")
+                lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_repository_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format repository report as Markdown.
@@ -170,6 +232,68 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        prs = report_data["pull_requests"]
+        by_repo = report_data.get("by_repository", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Pull Request Summary Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total PRs: {summary['total_prs']}")
+        lines.append(f"- Repositories: {summary['repositories']}")
+        lines.append("")
+        
+        # Group by repository
+        if by_repo:
+            for repo_name, repo_prs in sorted(by_repo.items()):
+                lines.append(f"## {repo_name}")
+                lines.append("")
+                
+                for pr in repo_prs:
+                    lines.append(f"### {pr['title']}")
+                    lines.append("")
+                    lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                    lines.append("")
+                    lines.append(pr['summary'])
+                    lines.append("")
+        else:
+            # List all PRs
+            lines.append("## Pull Requests")
+            lines.append("")
+            for pr in prs:
+                lines.append(f"### {pr['title']} ({pr['repository']})")
+                lines.append("")
+                lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                lines.append("")
+                lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_team_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format team report as Markdown.
@@ -232,6 +356,68 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        prs = report_data["pull_requests"]
+        by_repo = report_data.get("by_repository", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Pull Request Summary Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total PRs: {summary['total_prs']}")
+        lines.append(f"- Repositories: {summary['repositories']}")
+        lines.append("")
+        
+        # Group by repository
+        if by_repo:
+            for repo_name, repo_prs in sorted(by_repo.items()):
+                lines.append(f"## {repo_name}")
+                lines.append("")
+                
+                for pr in repo_prs:
+                    lines.append(f"### {pr['title']}")
+                    lines.append("")
+                    lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                    lines.append("")
+                    lines.append(pr['summary'])
+                    lines.append("")
+        else:
+            # List all PRs
+            lines.append("## Pull Requests")
+            lines.append("")
+            for pr in prs:
+                lines.append(f"### {pr['title']} ({pr['repository']})")
+                lines.append("")
+                lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                lines.append("")
+                lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_department_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format department report as Markdown.
@@ -285,6 +471,68 @@ class MarkdownFormatter:
             )
         
         lines.append("")
+        
+        return "\n".join(lines)
+    
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        prs = report_data["pull_requests"]
+        by_repo = report_data.get("by_repository", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Pull Request Summary Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total PRs: {summary['total_prs']}")
+        lines.append(f"- Repositories: {summary['repositories']}")
+        lines.append("")
+        
+        # Group by repository
+        if by_repo:
+            for repo_name, repo_prs in sorted(by_repo.items()):
+                lines.append(f"## {repo_name}")
+                lines.append("")
+                
+                for pr in repo_prs:
+                    lines.append(f"### {pr['title']}")
+                    lines.append("")
+                    lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                    lines.append("")
+                    lines.append(pr['summary'])
+                    lines.append("")
+        else:
+            # List all PRs
+            lines.append("## Pull Requests")
+            lines.append("")
+            for pr in prs:
+                lines.append(f"### {pr['title']} ({pr['repository']})")
+                lines.append("")
+                lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
+                lines.append("")
+                lines.append(pr['summary'])
+                lines.append("")
         
         return "\n".join(lines)
 
