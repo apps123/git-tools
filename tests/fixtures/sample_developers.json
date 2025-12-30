@@ -1,0 +1,19 @@
+[
+  {
+    "username": "alice",
+    "display_name": "Alice Developer",
+    "email": "alice@example.com",
+    "organization_member": true,
+    "team_affiliations": ["backend-team"],
+    "is_internal": true
+  },
+  {
+    "username": "bob",
+    "display_name": "Bob Contributor",
+    "email": "bob@example.com",
+    "organization_member": false,
+    "team_affiliations": [],
+    "is_internal": false
+  }
+]
+

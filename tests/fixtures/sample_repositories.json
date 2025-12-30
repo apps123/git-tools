@@ -1,0 +1,14 @@
+[
+  {
+    "name": "my-repo",
+    "full_name": "myorg/my-repo",
+    "owner": "myorg",
+    "visibility": "private",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-12-28T00:00:00Z",
+    "default_branch": "main",
+    "archived": false,
+    "description": "Example repository"
+  }
+]
+

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "abc123",
+    "type": "commit",
+    "timestamp": "2024-12-01T10:00:00Z",
+    "repository": "myorg/my-repo",
+    "developer": "alice",
+    "title": "Fix bug in authentication",
+    "state": null,
+    "metadata": {
+      "sha": "abc123def456",
+      "message": "Fix bug in authentication",
+      "files_changed": 3,
+      "additions": 50,
+      "deletions": 20
+    }
+  },
+  {
+    "id": "pr-42",
+    "type": "pull_request",
+    "timestamp": "2024-12-15T14:30:00Z",
+    "repository": "myorg/my-repo",
+    "developer": "bob",
+    "title": "Add new feature",
+    "state": "merged",
+    "metadata": {
+      "number": 42,
+      "base_branch": "main",
+      "head_branch": "feature/new-feature",
+      "merged": true,
+      "review_count": 2,
+      "comment_count": 5
+    }
+  }
+]
+

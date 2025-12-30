@@ -46,15 +46,15 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - [x] T005 Define core domain models (`Developer`, `Repository`, `Contribution`, `TimePeriod`) in `src/github_tools/models/` per `data-model.md`
 - [x] T005a [P] Extend `Developer` model in `src/github_tools/models/developer.py` with `is_internal` boolean field (True if member of organization/enterprise, False if outside collaborator)
 - [x] T006 Implement configuration loader using `pydantic` in `src/github_tools/utils/config.py` (GitHub token, org, base URL, cache paths)
-- [ ] T007 Implement file-based cache utilities (JSON/CSV, optional SQLite hooks) in `src/github_tools/utils/cache.py`
-- [ ] T008 Implement GitHub API client wrapper using `PyGithub` or `github3.py` in `src/github_tools/api/client.py`
-- [ ] T008a [P] Add organization membership checking methods to API client in `src/github_tools/api/client.py` (check if user is member of organization/enterprise vs outside collaborator with repository-specific access)
-- [ ] T009 [P] Implement rate limit and retry/backoff logic with resumable checkpoints in `src/github_tools/api/rate_limiter.py`
-- [ ] T010 Implement common filtering helpers for repositories, developers, and time periods in `src/github_tools/utils/filters.py`
-- [ ] T010a Implement contributor classification logic in `src/github_tools/utils/filters.py` (determine internal vs external: internal = organization/enterprise member, external = outside collaborator with repository-specific access)
-- [ ] T011 Add basic CLI entrypoint module `src/github_tools/cli/__init__.py` and top-level `github-tools` console script wiring in `pyproject.toml`
-- [ ] T012 Configure test fixtures for GitHub API mocks and sample data in `tests/fixtures/` (JSON responses, sample contributions)
-- [ ] T012a [P] Add unit tests for internal/external contributor classification in `tests/unit/test_contributor_classification.py` (test org membership detection, outside collaborator detection, edge cases like deleted accounts)
+- [x] T007 Implement file-based cache utilities (JSON/CSV, optional SQLite hooks) in `src/github_tools/utils/cache.py`
+- [x] T008 Implement GitHub API client wrapper using `PyGithub` or `github3.py` in `src/github_tools/api/client.py`
+- [x] T008a [P] Add organization membership checking methods to API client in `src/github_tools/api/client.py` (check if user is member of organization/enterprise vs outside collaborator with repository-specific access)
+- [x] T009 [P] Implement rate limit and retry/backoff logic with resumable checkpoints in `src/github_tools/api/rate_limiter.py`
+- [x] T010 Implement common filtering helpers for repositories, developers, and time periods in `src/github_tools/utils/filters.py`
+- [x] T010a Implement contributor classification logic in `src/github_tools/utils/filters.py` (determine internal vs external: internal = organization/enterprise member, external = outside collaborator with repository-specific access)
+- [x] T011 Add basic CLI entrypoint module `src/github_tools/cli/__init__.py` and top-level `github-tools` console script wiring in `pyproject.toml`
+- [x] T012 Configure test fixtures for GitHub API mocks and sample data in `tests/fixtures/` (JSON responses, sample contributions)
+- [x] T012a [P] Add unit tests for internal/external contributor classification in `tests/unit/test_contributor_classification.py` (test org membership detection, outside collaborator detection, edge cases like deleted accounts)
 
 **Checkpoint**: Foundation ready – core models (including internal/external classification), config, caching, API access (including org membership checking), contributor classification logic, and CLI skeleton are in place.
 
