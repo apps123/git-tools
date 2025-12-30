@@ -135,17 +135,17 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 4 (write FIRST)
 
-- [ ] T035 [P] [US4] Add contract test for PR summary report structure and 4-line limit in `tests/contract/test_pr_summary_report_contract.py`
-- [ ] T036 [P] [US4] Add integration test for PR summary generation across multiple repositories in `tests/integration/test_pr_summary_report_flow.py`
-- [ ] T037 [P] [US4] Add unit tests for PR summary generation and context handling in `tests/unit/test_pr_summarizer.py`
+- [x] T035 [P] [US4] Add contract test for PR summary report structure and 4-line limit in `tests/contract/test_pr_summary_report_contract.py`
+- [x] T036 [P] [US4] Add integration test for PR summary generation across multiple repositories in `tests/integration/test_pr_summary_report_flow.py`
+- [x] T037 [P] [US4] Add unit tests for PR summary generation and context handling in `tests/unit/test_pr_summarizer.py`
 
 ### Implementation for User Story 4
 
-- [ ] T038 [P] [US4] Implement PR collection logic using GitHub API in `src/github_tools/collectors/pr_collector.py` (only PRs merged to main or configured primary branch)
-- [ ] T039 [P] [US4] Implement repository context analysis helper in `src/github_tools/summarizers/context_analyzer.py`
-- [ ] T040 [US4] Implement LLM-based PR summarizer in `src/github_tools/summarizers/pr_summarizer.py` (enforce 4-line limit, handle rate limits and errors)
-- [ ] T041 [US4] Implement `pr-summary-report` CLI command in `src/github_tools/cli/pr_summary_report.py`
-- [ ] T042 [US4] Extend report generator and templates for PR summary sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
+- [x] T038 [P] [US4] Implement PR collection logic using GitHub API in `src/github_tools/collectors/pr_collector.py` (only PRs merged to main or configured primary branch)
+- [x] T039 [P] [US4] Implement repository context analysis helper in `src/github_tools/summarizers/context_analyzer.py`
+- [x] T040 [US4] Implement LLM-based PR summarizer in `src/github_tools/summarizers/pr_summarizer.py` (enforce 4-line limit, handle rate limits and errors)
+- [x] T041 [US4] Implement `pr-summary-report` CLI command in `src/github_tools/cli/pr_summary_report.py`
+- [x] T042 [US4] Extend report generator and templates for PR summary sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
 
 **Checkpoint**: PR summary reports independently testable; they rely on foundational collectors and summarizers but not on team/anomaly features.
 

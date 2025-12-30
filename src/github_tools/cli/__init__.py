@@ -9,6 +9,7 @@ from github_tools import __version__
 from github_tools.cli.developer_report import developer_report
 from github_tools.cli.repository_report import repository_report
 from github_tools.cli.team_report import team_report
+from github_tools.cli.pr_summary_report import pr_summary_report
 from github_tools.utils.logging import setup_logging
 from github_tools.utils.config import load_config
 
@@ -78,6 +79,7 @@ def main() -> None:
 cli.add_command(developer_report)
 cli.add_command(repository_report)
 cli.add_command(team_report)
+cli.add_command(pr_summary_report)
 
 
 if __name__ == "__main__":
