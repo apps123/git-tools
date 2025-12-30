@@ -89,6 +89,74 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format PR summary report as Markdown.
@@ -147,6 +215,74 @@ class MarkdownFormatter:
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
                 lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
                 lines.append("")
         
         return "\n".join(lines)
@@ -232,6 +368,74 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format PR summary report as Markdown.
@@ -290,6 +494,74 @@ class MarkdownFormatter:
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
                 lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
                 lines.append("")
         
         return "\n".join(lines)
@@ -418,6 +690,74 @@ class MarkdownFormatter:
         
         return "\n".join(lines)
     
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                lines.append("")
+        
+        return "\n".join(lines)
+    
     def format_department_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format department report as Markdown.
@@ -532,6 +872,74 @@ class MarkdownFormatter:
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
                 lines.append(pr['summary'])
+                lines.append("")
+        
+        return "\n".join(lines)
+    
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        anomalies = report_data["anomalies"]
+        by_severity = report_data.get("by_severity", {})
+        
+        lines = []
+        
+        # Header
+        lines.append("# Anomaly Detection Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Anomalies: {summary['total_anomalies']}")
+        if "by_severity" in summary:
+            lines.append("")
+            lines.append("**By Severity:**")
+            for severity, count in sorted(summary["by_severity"].items()):
+                lines.append(f"- {severity.capitalize()}: {count}")
+        lines.append("")
+        
+        # Group by severity
+        if by_severity:
+            for severity in ["critical", "high", "medium", "low"]:
+                if severity in by_severity and by_severity[severity]:
+                    lines.append(f"## {severity.capitalize()} Severity Anomalies")
+                    lines.append("")
+                    
+                    for anomaly in by_severity[severity]:
+                        lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                        lines.append("")
+                        lines.append(f"**Type**: {anomaly['type']}")
+                        lines.append(f"**Description**: {anomaly['description']}")
+                        lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
+                        lines.append(f"**Detected**: {anomaly['detected_at']}")
+                        lines.append("")
+        else:
+            # List all anomalies
+            lines.append("## Anomalies")
+            lines.append("")
+            for anomaly in anomalies:
+                lines.append(f"### {anomaly['entity']} ({anomaly['entity_type']})")
+                lines.append("")
+                lines.append(f"**Type**: {anomaly['type']} | **Severity**: {anomaly['severity']}")
+                lines.append(f"**Description**: {anomaly['description']}")
+                lines.append(f"**Change**: {anomaly['change_percent']:.1f}% ({anomaly['previous_value']} -> {anomaly['current_value']})")
                 lines.append("")
         
         return "\n".join(lines)

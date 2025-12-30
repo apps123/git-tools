@@ -94,4 +94,166 @@ class CSVFormatter:
             ])
         
         return output.getvalue()
+    
+    def format_team_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format team report as CSV.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            CSV string
+        """
+        teams = report_data["teams"]
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Header
+        writer.writerow([
+            "team_name",
+            "total_contributions",
+            "active_members",
+            "commits",
+            "pull_requests",
+            "issues",
+            "reviews",
+            "repositories_contributed",
+        ])
+        
+        # Data rows
+        for team in teams:
+            repos = ",".join(team["repositories_contributed"])
+            writer.writerow([
+                team["team_name"],
+                team["total_contributions"],
+                team["active_members"],
+                team["commits"],
+                team["pull_requests"],
+                team["issues"],
+                team["reviews"],
+                repos,
+            ])
+        
+        return output.getvalue()
+    
+    def format_department_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format department report as CSV.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            CSV string
+        """
+        departments = report_data["departments"]
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Header
+        writer.writerow([
+            "department_name",
+            "total_contributions",
+            "active_members",
+            "teams",
+        ])
+        
+        # Data rows
+        for dept in departments:
+            teams_str = ",".join(dept["teams"])
+            writer.writerow([
+                dept["department_name"],
+                dept["total_contributions"],
+                dept["active_members"],
+                teams_str,
+            ])
+        
+        return output.getvalue()
+    
+    def format_pr_summary_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format PR summary report as CSV.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            CSV string
+        """
+        prs = report_data["pull_requests"]
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Header
+        writer.writerow([
+            "id",
+            "title",
+            "repository",
+            "author",
+            "created_at",
+            "state",
+            "summary",
+        ])
+        
+        # Data rows
+        for pr in prs:
+            writer.writerow([
+                pr["id"],
+                pr["title"],
+                pr["repository"],
+                pr["author"],
+                pr["created_at"],
+                pr.get("state", ""),
+                pr["summary"],
+            ])
+        
+        return output.getvalue()
+    
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as CSV.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            CSV string
+        """
+        anomalies = report_data["anomalies"]
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Header
+        writer.writerow([
+            "type",
+            "entity",
+            "entity_type",
+            "severity",
+            "description",
+            "detected_at",
+            "previous_value",
+            "current_value",
+            "change_percent",
+        ])
+        
+        # Data rows
+        for anomaly in anomalies:
+            writer.writerow([
+                anomaly["type"],
+                anomaly["entity"],
+                anomaly["entity_type"],
+                anomaly["severity"],
+                anomaly["description"],
+                anomaly["detected_at"],
+                anomaly["previous_value"],
+                anomaly["current_value"],
+                anomaly["change_percent"],
+            ])
+        
+        return output.getvalue()
 

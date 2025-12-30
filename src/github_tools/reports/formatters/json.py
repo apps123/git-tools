@@ -66,4 +66,16 @@ class JSONFormatter:
             JSON string
         """
         return json.dumps(report_data, indent=2, default=str)
+    
+    def format_anomaly_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format anomaly report as JSON.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            JSON string
+        """
+        return json.dumps(report_data, indent=2, default=str)
 
