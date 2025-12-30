@@ -169,4 +169,122 @@ class MarkdownFormatter:
                     lines.append("")
         
         return "\n".join(lines)
+    
+    def format_team_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format team report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        teams = report_data["teams"]
+        
+        lines = []
+        
+        # Header
+        lines.append("# Team Contribution Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Teams: {summary['total_teams']}")
+        lines.append("")
+        
+        # Teams table
+        lines.append("## Teams")
+        lines.append("")
+        lines.append(
+            "| Team | Contributions | Members | Commits | "
+            "PRs | Issues | Reviews | Repositories |"
+        )
+        lines.append(
+            "|------|---------------|---------|---------|"
+            "-----|--------|---------|--------------|"
+        )
+        
+        for team in teams:
+            repos = ", ".join(team["repositories_contributed"])
+            lines.append(
+                f"| {team['team_name']} | "
+                f"{team['total_contributions']} | "
+                f"{team['active_members']} | "
+                f"{team['commits']} | "
+                f"{team['pull_requests']} | "
+                f"{team['issues']} | "
+                f"{team['reviews']} | "
+                f"{repos} |"
+            )
+        
+        lines.append("")
+        
+        return "\n".join(lines)
+    
+    def format_department_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format department report as Markdown.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            Markdown string
+        """
+        metadata = report_data["metadata"]
+        summary = report_data["summary"]
+        departments = report_data["departments"]
+        
+        lines = []
+        
+        # Header
+        lines.append("# Department Contribution Report")
+        lines.append("")
+        
+        # Metadata
+        period = metadata["period"]
+        lines.append(f"**Period**: {period['start_date']} to {period['end_date']}")
+        lines.append(f"**Generated**: {metadata['generated_at']}")
+        lines.append(f"**Tool Version**: {metadata['tool_version']}")
+        lines.append("")
+        
+        # Summary
+        lines.append("## Summary")
+        lines.append("")
+        lines.append(f"- Total Departments: {summary['total_departments']}")
+        lines.append("")
+        
+        # Departments table
+        lines.append("## Departments")
+        lines.append("")
+        lines.append(
+            "| Department | Contributions | Members | Teams |"
+        )
+        lines.append(
+            "|------------|---------------|---------|-------|"
+        )
+        
+        for dept in departments:
+            teams_str = ", ".join(dept["teams"])
+            lines.append(
+                f"| {dept['department_name']} | "
+                f"{dept['total_contributions']} | "
+                f"{dept['active_members']} | "
+                f"{teams_str} |"
+            )
+        
+        lines.append("")
+        
+        return "\n".join(lines)
 

@@ -114,15 +114,15 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 3 (write FIRST)
 
-- [ ] T029 [P] [US3] Add contract test for team/department report output schema in `tests/contract/test_team_report_contract.py`
-- [ ] T030 [P] [US3] Add integration test for team/department aggregation flow in `tests/integration/test_team_report_flow.py`
-- [ ] T031 [P] [US3] Add unit tests for team and department metric calculations in `tests/unit/test_team_analyzer.py`
+- [x] T029 [P] [US3] Add contract test for team/department report output schema in `tests/contract/test_team_report_contract.py`
+- [x] T030 [P] [US3] Add integration test for team/department aggregation flow in `tests/integration/test_team_report_flow.py`
+- [x] T031 [P] [US3] Add unit tests for team and department metric calculations in `tests/unit/test_team_analyzer.py`
 
 ### Implementation for User Story 3
 
-- [ ] T032 [P] [US3] Implement team and department analyzers to compute `TeamMetrics` and `DepartmentMetrics` in `src/github_tools/analyzers/team_analyzer.py`
-- [ ] T033 [US3] Implement `team-report` CLI command in `src/github_tools/cli/team_report.py` (inputs: team config, date range)
-- [ ] T034 [US3] Extend report generator/templates for team and department sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
+- [x] T032 [P] [US3] Implement team and department analyzers to compute `TeamMetrics` and `DepartmentMetrics` in `src/github_tools/analyzers/team_analyzer.py`
+- [x] T033 [US3] Implement `team-report` CLI command in `src/github_tools/cli/team_report.py` (inputs: team config, date range)
+- [x] T034 [US3] Extend report generator/templates for team and department sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
 
 **Checkpoint**: Team and department reports available and verified without depending on PR summaries or anomaly detection.
 
