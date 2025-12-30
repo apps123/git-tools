@@ -1,0 +1,37 @@
+# Developer Activity Report
+
+**Period**: {{ period.start_date }} to {{ period.end_date }}  
+**Generated**: {{ generated_at }}  
+**Tool Version**: {{ tool_version }}
+
+## Summary
+
+- Total Developers: {{ summary.total_developers }}
+- Total Contributions: {{ summary.total_contributions }}
+
+## Developers
+
+| Username | Commits | PRs Created | PRs Reviewed | PRs Merged | Issues Created | Issues Resolved | Repositories |
+|----------|---------|-------------|--------------|------------|----------------|-----------------|--------------|
+{% for dev in developers %}
+| {{ dev.username }} | {{ dev.total_commits }} | {{ dev.pull_requests_created }} | {{ dev.pull_requests_reviewed }} | {{ dev.pull_requests_merged }} | {{ dev.issues_created }} | {{ dev.issues_resolved }} | {{ dev.repositories_contributed | join(', ') }} |
+{% endfor %}
+
+{% if has_per_repository_breakdown %}
+## Per-Repository Breakdown
+
+{% for dev in developers %}
+{% if dev.per_repository_breakdown %}
+### {{ dev.username }}
+
+{% for repo, breakdown in dev.per_repository_breakdown.items() %}
+**{{ repo }}**:
+- Commits: {{ breakdown.commits }}
+- PRs Created: {{ breakdown.pull_requests_created }}
+- PRs Reviewed: {{ breakdown.pull_requests_reviewed }}
+
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+

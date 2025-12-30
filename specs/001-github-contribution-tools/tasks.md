@@ -67,19 +67,19 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 1 (write FIRST)
 
-- [ ] T013 [P] [US1] Add contract test for developer activity report output schema in `tests/contract/test_developer_report_contract.py`
-- [ ] T014 [P] [US1] Add integration test for end-to-end developer report flow in `tests/integration/test_developer_report_flow.py`
-- [ ] T015 [P] [US1] Add unit tests for developer metric aggregation logic in `tests/unit/test_developer_analyzer.py`
-- [ ] T015a [P] [US1] Add targeted integration test for attribution accuracy (≥95%) using curated sample dataset in `tests/integration/test_attribution_accuracy.py` with ground-truth contributor mappings in `tests/integration/fixtures/attribution_ground_truth.json`
+- [x] T013 [P] [US1] Add contract test for developer activity report output schema in `tests/contract/test_developer_report_contract.py`
+- [x] T014 [P] [US1] Add integration test for end-to-end developer report flow in `tests/integration/test_developer_report_flow.py`
+- [x] T015 [P] [US1] Add unit tests for developer metric aggregation logic in `tests/unit/test_developer_analyzer.py`
+- [x] T015a [P] [US1] Add targeted integration test for attribution accuracy (≥95%) using curated sample dataset in `tests/integration/test_attribution_accuracy.py` with ground-truth contributor mappings in `tests/integration/fixtures/attribution_ground_truth.json`
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Implement contribution collection pipeline for commits/PRs/reviews/issues in `src/github_tools/collectors/contribution_collector.py`
-- [ ] T017 [P] [US1] Implement developer activity analyzer to compute `DeveloperMetrics` in `src/github_tools/analyzers/developer_analyzer.py`
-- [ ] T018 [US1] Implement developer report generation logic (Markdown/JSON/CSV) in `src/github_tools/reports/generator.py` and templates in `src/github_tools/reports/templates/`
-- [ ] T019 [US1] Implement `developer-report` CLI command in `src/github_tools/cli/developer_report.py` (args: dates, repos, developers, teams)
-- [ ] T020 [US1] Wire `developer-report` command into main CLI group in `src/github_tools/cli/__init__.py`
-- [ ] T021 [US1] Ensure logging, error handling, and exit codes for `developer-report` follow contracts (`cli-contracts.md`)
+- [x] T016 [P] [US1] Implement contribution collection pipeline for commits/PRs/reviews/issues in `src/github_tools/collectors/contribution_collector.py`
+- [x] T017 [P] [US1] Implement developer activity analyzer to compute `DeveloperMetrics` in `src/github_tools/analyzers/developer_analyzer.py`
+- [x] T018 [US1] Implement developer report generation logic (Markdown/JSON/CSV) in `src/github_tools/reports/generator.py` and templates in `src/github_tools/reports/templates/`
+- [x] T019 [US1] Implement `developer-report` CLI command in `src/github_tools/cli/developer_report.py` (args: dates, repos, developers, teams)
+- [x] T020 [US1] Wire `developer-report` command into main CLI group in `src/github_tools/cli/__init__.py`
+- [x] T021 [US1] Ensure logging, error handling, and exit codes for `developer-report` follow contracts (`cli-contracts.md`)
 
 **Checkpoint**: User Story 1 fully functional and testable independently via CLI.
 
@@ -92,16 +92,16 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 2 (write FIRST)
 
-- [ ] T022 [P] [US2] Add contract test for repository report output schema in `tests/contract/test_repository_report_contract.py`
-- [ ] T023 [P] [US2] Add integration test for repository analysis workflow in `tests/integration/test_repository_report_flow.py`
-- [ ] T024 [P] [US2] Add unit tests for repository trend and distribution calculations in `tests/unit/test_repository_analyzer.py`
+- [x] T022 [P] [US2] Add contract test for repository report output schema in `tests/contract/test_repository_report_contract.py`
+- [x] T023 [P] [US2] Add integration test for repository analysis workflow in `tests/integration/test_repository_report_flow.py`
+- [x] T024 [P] [US2] Add unit tests for repository trend and distribution calculations in `tests/unit/test_repository_analyzer.py`
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Implement repository-level aggregation and metrics calculation in `src/github_tools/analyzers/repository_analyzer.py`
-- [ ] T026 [US2] Extend report generator and templates for repository-level sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
-- [ ] T027 [US2] Implement `repository-report` CLI command in `src/github_tools/cli/repository_report.py`
-- [ ] T028 [US2] Integrate repository filters and options (e.g., multiple repos) into `repository-report` CLI and plumbing
+- [x] T025 [P] [US2] Implement repository-level aggregation and metrics calculation in `src/github_tools/analyzers/repository_analyzer.py`
+- [x] T026 [US2] Extend report generator and templates for repository-level sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
+- [x] T027 [US2] Implement `repository-report` CLI command in `src/github_tools/cli/repository_report.py`
+- [x] T028 [US2] Integrate repository filters and options (e.g., multiple repos) into `repository-report` CLI and plumbing
 
 **Checkpoint**: User Stories 1 and 2 both independently testable; repository reports do not depend on team/department metrics.
 

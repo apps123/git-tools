@@ -6,6 +6,8 @@ from typing import Optional
 import click
 
 from github_tools import __version__
+from github_tools.cli.developer_report import developer_report
+from github_tools.cli.repository_report import repository_report
 from github_tools.utils.logging import setup_logging
 from github_tools.utils.config import load_config
 
@@ -69,6 +71,11 @@ def main() -> None:
     except Exception as e:
         logger.error(f"Unexpected error: {e}", exc_info=True)
         sys.exit(1)
+
+
+# Register commands
+cli.add_command(developer_report)
+cli.add_command(repository_report)
 
 
 if __name__ == "__main__":
