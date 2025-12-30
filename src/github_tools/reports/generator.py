@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 from github_tools import __version__
 from github_tools.analyzers.developer_analyzer import DeveloperMetrics
 from github_tools.analyzers.repository_analyzer import RepositoryMetrics
+from github_tools.analyzers.team_analyzer import TeamMetrics, DepartmentMetrics
 from github_tools.models.time_period import TimePeriod
 from github_tools.reports.formatters.json import JSONFormatter
 from github_tools.reports.formatters.markdown import MarkdownFormatter
@@ -195,5 +196,147 @@ class ReportGenerator:
                 "total_repositories": len(metrics),
             },
             "repositories": repositories,
+        }
+    
+    def generate_team_report(
+        self,
+        metrics: List[TeamMetrics],
+        time_period: TimePeriod,
+        format: str = "markdown",
+    ) -> str:
+        """
+        Generate team contribution report.
+        
+        Args:
+            metrics: List of team metrics
+            time_period: Time period for the report
+            format: Output format (json, markdown, csv)
+        
+        Returns:
+            Formatted report string
+        """
+        report_data = self._build_team_report_data(metrics, time_period)
+        
+        if format == "json":
+            return self.json_formatter.format_team_report(report_data)
+        elif format == "csv":
+            return self.csv_formatter.format_team_report(report_data)
+        elif format == "markdown":
+            return self.markdown_formatter.format_team_report(report_data)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
+    
+    def _build_team_report_data(
+        self,
+        metrics: List[TeamMetrics],
+        time_period: TimePeriod,
+    ) -> Dict[str, Any]:
+        """
+        Build team report data structure.
+        
+        Args:
+            metrics: List of team metrics
+            time_period: Time period for the report
+        
+        Returns:
+            Report data dictionary
+        """
+        teams = []
+        for metric in metrics:
+            team_data = {
+                "team_name": metric.team_name,
+                "total_contributions": metric.total_contributions,
+                "active_members": metric.active_members,
+                "member_list": sorted(metric.member_list),
+                "commits": metric.commits,
+                "pull_requests": metric.pull_requests,
+                "issues": metric.issues,
+                "reviews": metric.reviews,
+                "repositories_contributed": sorted(set(metric.repositories_contributed)),
+            }
+            teams.append(team_data)
+        
+        return {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "tool_version": __version__,
+                "period": {
+                    "start_date": time_period.start_date.isoformat(),
+                    "end_date": time_period.end_date.isoformat(),
+                },
+            },
+            "summary": {
+                "total_teams": len(metrics),
+            },
+            "teams": teams,
+        }
+    
+    def generate_department_report(
+        self,
+        metrics: List[DepartmentMetrics],
+        time_period: TimePeriod,
+        format: str = "markdown",
+    ) -> str:
+        """
+        Generate department contribution report.
+        
+        Args:
+            metrics: List of department metrics
+            time_period: Time period for the report
+            format: Output format (json, markdown, csv)
+        
+        Returns:
+            Formatted report string
+        """
+        report_data = self._build_department_report_data(metrics, time_period)
+        
+        if format == "json":
+            return self.json_formatter.format_department_report(report_data)
+        elif format == "csv":
+            return self.csv_formatter.format_department_report(report_data)
+        elif format == "markdown":
+            return self.markdown_formatter.format_department_report(report_data)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
+    
+    def _build_department_report_data(
+        self,
+        metrics: List[DepartmentMetrics],
+        time_period: TimePeriod,
+    ) -> Dict[str, Any]:
+        """
+        Build department report data structure.
+        
+        Args:
+            metrics: List of department metrics
+            time_period: Time period for the report
+        
+        Returns:
+            Report data dictionary
+        """
+        departments = []
+        for metric in metrics:
+            dept_data = {
+                "department_name": metric.department_name,
+                "total_contributions": metric.total_contributions,
+                "active_members": metric.active_members,
+                "member_list": sorted(metric.member_list),
+                "teams": sorted(metric.teams),
+            }
+            departments.append(dept_data)
+        
+        return {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "tool_version": __version__,
+                "period": {
+                    "start_date": time_period.start_date.isoformat(),
+                    "end_date": time_period.end_date.isoformat(),
+                },
+            },
+            "summary": {
+                "total_departments": len(metrics),
+            },
+            "departments": departments,
         }
 

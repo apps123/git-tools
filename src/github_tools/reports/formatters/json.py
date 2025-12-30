@@ -30,4 +30,28 @@ class JSONFormatter:
             JSON string
         """
         return json.dumps(report_data, indent=2, default=str)
+    
+    def format_team_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format team report as JSON.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            JSON string
+        """
+        return json.dumps(report_data, indent=2, default=str)
+    
+    def format_department_report(self, report_data: Dict[str, Any]) -> str:
+        """
+        Format department report as JSON.
+        
+        Args:
+            report_data: Report data dictionary
+        
+        Returns:
+            JSON string
+        """
+        return json.dumps(report_data, indent=2, default=str)
 
