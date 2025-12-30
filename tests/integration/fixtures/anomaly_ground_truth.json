@@ -1,0 +1,67 @@
+{
+  "description": "Ground truth data for anomaly detection recall testing",
+  "test_cases": [
+    {
+      "anomaly_id": "drop_1",
+      "type": "contribution_drop",
+      "entity": "alice",
+      "entity_type": "developer",
+      "previous_period_contributions": 100,
+      "current_period_contributions": 35,
+      "change_percent": -65.0,
+      "expected_detected": true,
+      "expected_severity": "high",
+      "timestamp": "2024-12-15T10:00:00Z"
+    },
+    {
+      "anomaly_id": "spike_1",
+      "type": "contribution_spike",
+      "entity": "myorg/repo1",
+      "entity_type": "repository",
+      "previous_period_contributions": 50,
+      "current_period_contributions": 130,
+      "change_percent": 160.0,
+      "expected_detected": true,
+      "expected_severity": "critical",
+      "timestamp": "2024-12-20T14:00:00Z"
+    },
+    {
+      "anomaly_id": "drop_2",
+      "type": "contribution_drop",
+      "entity": "backend-team",
+      "entity_type": "team",
+      "previous_period_contributions": 200,
+      "current_period_contributions": 80,
+      "change_percent": -60.0,
+      "expected_detected": true,
+      "expected_severity": "high",
+      "timestamp": "2024-12-18T11:00:00Z"
+    },
+    {
+      "anomaly_id": "normal_1",
+      "type": "normal",
+      "entity": "bob",
+      "entity_type": "developer",
+      "previous_period_contributions": 50,
+      "current_period_contributions": 55,
+      "change_percent": 10.0,
+      "expected_detected": false,
+      "expected_severity": null,
+      "timestamp": "2024-12-22T09:00:00Z"
+    },
+    {
+      "anomaly_id": "spike_2",
+      "type": "contribution_spike",
+      "entity": "myorg/repo2",
+      "entity_type": "repository",
+      "previous_period_contributions": 30,
+      "current_period_contributions": 90,
+      "change_percent": 200.0,
+      "expected_detected": true,
+      "expected_severity": "critical",
+      "timestamp": "2024-12-25T16:00:00Z"
+    }
+  ],
+  "expected_recall_threshold": 0.80
+}
+

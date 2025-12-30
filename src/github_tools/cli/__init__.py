@@ -10,6 +10,7 @@ from github_tools.cli.developer_report import developer_report
 from github_tools.cli.repository_report import repository_report
 from github_tools.cli.team_report import team_report
 from github_tools.cli.pr_summary_report import pr_summary_report
+from github_tools.cli.anomaly_report import anomaly_report
 from github_tools.utils.logging import setup_logging
 from github_tools.utils.config import load_config
 
@@ -80,6 +81,7 @@ cli.add_command(developer_report)
 cli.add_command(repository_report)
 cli.add_command(team_report)
 cli.add_command(pr_summary_report)
+cli.add_command(anomaly_report)
 
 
 if __name__ == "__main__":

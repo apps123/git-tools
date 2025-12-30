@@ -7,6 +7,7 @@ from github_tools import __version__
 from github_tools.analyzers.developer_analyzer import DeveloperMetrics
 from github_tools.analyzers.repository_analyzer import RepositoryMetrics
 from github_tools.analyzers.team_analyzer import TeamMetrics, DepartmentMetrics
+from github_tools.analyzers.anomaly_detector import Anomaly
 from github_tools.models.time_period import TimePeriod
 from github_tools.reports.formatters.json import JSONFormatter
 from github_tools.reports.formatters.markdown import MarkdownFormatter
@@ -406,5 +407,75 @@ class ReportGenerator:
             },
             "pull_requests": summaries,
             "by_repository": repos,
+        }
+    
+    def generate_anomaly_report(
+        self,
+        anomalies: List[Anomaly],
+        time_period: TimePeriod,
+        format: str = "markdown",
+    ) -> str:
+        """
+        Generate anomaly detection report.
+        
+        Args:
+            anomalies: List of detected anomalies
+            time_period: Time period for the report
+            format: Output format (json, markdown, csv)
+        
+        Returns:
+            Formatted report string
+        """
+        report_data = self._build_anomaly_report_data(anomalies, time_period)
+        
+        if format == "json":
+            return self.json_formatter.format_anomaly_report(report_data)
+        elif format == "csv":
+            return self.csv_formatter.format_anomaly_report(report_data)
+        elif format == "markdown":
+            return self.markdown_formatter.format_anomaly_report(report_data)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
+    
+    def _build_anomaly_report_data(
+        self,
+        anomalies: List[Anomaly],
+        time_period: TimePeriod,
+    ) -> Dict[str, Any]:
+        """
+        Build anomaly report data structure.
+        
+        Args:
+            anomalies: List of detected anomalies
+            time_period: Time period for the report
+        
+        Returns:
+            Report data dictionary
+        """
+        # Group by severity
+        by_severity = {}
+        for anomaly in anomalies:
+            if anomaly.severity not in by_severity:
+                by_severity[anomaly.severity] = []
+            by_severity[anomaly.severity].append(anomaly.to_dict())
+        
+        return {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "tool_version": __version__,
+                "period": {
+                    "start_date": time_period.start_date.isoformat(),
+                    "end_date": time_period.end_date.isoformat(),
+                },
+            },
+            "summary": {
+                "total_anomalies": len(anomalies),
+                "by_severity": {
+                    severity: len(anomalies_list)
+                    for severity, anomalies_list in by_severity.items()
+                },
+            },
+            "anomalies": [a.to_dict() for a in anomalies],
+            "by_severity": by_severity,
         }
 

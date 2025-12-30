@@ -158,16 +158,16 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 5 (write FIRST)
 
-- [ ] T043 [P] [US5] Add contract test for trend/anomaly report structure in `tests/contract/test_trends_report_contract.py`
-- [ ] T044 [P] [US5] Add integration test for trends/anomalies across multiple periods in `tests/integration/test_trends_flow.py`
-- [ ] T045 [P] [US5] Add unit tests for anomaly detection thresholds and trend calculations in `tests/unit/test_anomaly_detector.py`
-- [ ] T045a [P] [US5] Add targeted integration test for anomaly detection recall (≥80%) using curated sample dataset in `tests/integration/test_anomaly_recall.py` with known anomaly events (drops/spikes >50%) in `tests/integration/fixtures/anomaly_ground_truth.json`
+- [x] T043 [P] [US5] Add contract test for trend/anomaly report structure in `tests/contract/test_trends_report_contract.py`
+- [x] T044 [P] [US5] Add integration test for trends/anomalies across multiple periods in `tests/integration/test_trends_flow.py`
+- [x] T045 [P] [US5] Add unit tests for anomaly detection thresholds and trend calculations in `tests/unit/test_anomaly_detector.py`
+- [x] T045a [P] [US5] Add targeted integration test for anomaly detection recall (≥80%) using curated sample dataset in `tests/integration/test_anomaly_recall.py` with known anomaly events (drops/spikes >50%) in `tests/integration/fixtures/anomaly_ground_truth.json`
 
 ### Implementation for User Story 5
 
-- [ ] T046 [P] [US5] Implement anomaly detector and trend analysis logic in `src/github_tools/analyzers/anomaly_detector.py`
-- [ ] T047 [US5] Implement `trends` CLI command in `src/github_tools/cli/trends.py`
-- [ ] T048 [US5] Extend report generator/templates for trend and anomaly sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
+- [x] T046 [P] [US5] Implement anomaly detector and trend analysis logic in `src/github_tools/analyzers/anomaly_detector.py`
+- [x] T047 [US5] Implement `trends` CLI command in `src/github_tools/cli/trends.py`
+- [x] T048 [US5] Extend report generator/templates for trend and anomaly sections in `src/github_tools/reports/generator.py` and `src/github_tools/reports/templates/`
 
 **Checkpoint**: Trends and anomalies reporting independently testable and can be run over existing contribution metrics.
 
