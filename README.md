@@ -516,37 +516,266 @@ All commands support these common options:
 
 ## Configuration
 
-### Configuration File
+The tools support multiple ways to configure settings: environment variables, `.env` files, and command-line options. Configuration follows a priority order: command-line options > environment variables > `.env` file > defaults.
 
-Create a configuration file (YAML or TOML) to set default values:
+### Minimum Required Configuration
 
-`config.yaml`:
-```yaml
-github:
-  token: ${GITHUB_TOKEN}
-  organization: myorg
-  base_url: https://api.github.com
+At minimum, you need a **GitHub Personal Access Token** to run any of the tools:
 
-cache:
-  enabled: true
-  directory: ~/.github-tools/cache
-  ttl_hours: 24
-
-logging:
-  level: INFO
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-```
-
-Use the configuration file:
 ```bash
-github-tools --config config.yaml developer-report --start-date 30d --end-date today
+export GITHUB_TOKEN="ghp_your_token_here"
 ```
 
-### Environment Variables
+For PR summarization features, you also need an OpenAI API key:
 
-- `GITHUB_TOKEN`: GitHub Personal Access Token
-- `OPENAI_API_KEY`: OpenAI API key for PR summarization
-- `GITHUB_BASE_URL`: GitHub API base URL (for GitHub Enterprise)
+```bash
+export OPENAI_API_KEY="sk-your_key_here"
+```
+
+### Configuration Methods
+
+#### Method 1: Environment Variables (Recommended)
+
+Set environment variables in your shell profile or session:
+
+**Required:**
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+```
+
+**Optional:**
+```bash
+# Organization name (can also be specified per command)
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+
+# For GitHub Enterprise
+export GITHUB_TOOLS_GITHUB_BASE_URL="https://github.company.com/api/v3"
+
+# Cache settings
+export GITHUB_TOOLS_CACHE_DIR="$HOME/.github-tools/cache"
+export GITHUB_TOOLS_CACHE_TTL_HOURS=24
+export GITHUB_TOOLS_USE_SQLITE=false
+
+# OpenAI API key (only for PR summarization)
+export OPENAI_API_KEY="sk-your_key_here"
+```
+
+**Add to shell profile** (`~/.bashrc`, `~/.zshrc`, etc.) for persistence:
+```bash
+# GitHub Tools Configuration
+export GITHUB_TOKEN="ghp_your_token_here"
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+export OPENAI_API_KEY="sk-your_key_here"  # Optional
+```
+
+#### Method 2: `.env` File
+
+Create a `.env` file in your project root or home directory:
+
+`.env`:
+```bash
+# Required
+GITHUB_TOKEN=ghp_your_token_here
+
+# Optional - GitHub configuration
+GITHUB_TOOLS_GITHUB_ORGANIZATION=myorg
+GITHUB_TOOLS_GITHUB_BASE_URL=https://api.github.com
+
+# Optional - Cache configuration
+GITHUB_TOOLS_CACHE_DIR=~/.github-tools/cache
+GITHUB_TOOLS_CACHE_TTL_HOURS=24
+GITHUB_TOOLS_CACHE_TTL_HOURS_HISTORICAL=24
+GITHUB_TOOLS_USE_SQLITE=false
+
+# Optional - OpenAI API key (for PR summarization)
+OPENAI_API_KEY=sk-your_key_here
+```
+
+The tools automatically load `.env` files from the current directory or your home directory.
+
+#### Method 3: Command-Line Options
+
+Most settings can be overridden via command-line options:
+
+```bash
+# Override token
+github-tools --token ghp_another_token developer-report --start-date 30d --end-date today
+
+# Override base URL for GitHub Enterprise
+github-tools --base-url https://github.company.com/api/v3 developer-report --start-date 30d --end-date today
+```
+
+### Configuration Examples by Use Case
+
+#### Example 1: Basic Setup (GitHub.com)
+
+**Minimum configuration:**
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+```
+
+**Run commands:**
+```bash
+# Must specify repository if organization not configured
+github-tools developer-report \
+  --start-date 30d \
+  --end-date today \
+  --repository myorg/my-repo
+
+# Or specify organization via environment variable
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+github-tools developer-report --start-date 30d --end-date today
+```
+
+#### Example 2: Complete Setup with Organization
+
+**Configuration:**
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+export GITHUB_TOOLS_CACHE_DIR="$HOME/.github-tools/cache"
+export GITHUB_TOOLS_CACHE_TTL_HOURS=24
+```
+
+**Run commands:**
+```bash
+# Works across all organization repositories
+github-tools developer-report --start-date 30d --end-date today
+github-tools repository-report --start-date 1m --end-date today
+```
+
+#### Example 3: GitHub Enterprise Setup
+
+**Configuration:**
+```bash
+export GITHUB_TOKEN="ghp_your_enterprise_token"
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="company-org"
+export GITHUB_TOOLS_GITHUB_BASE_URL="https://github.company.com/api/v3"
+```
+
+**Run commands:**
+```bash
+github-tools developer-report --start-date 30d --end-date today
+```
+
+#### Example 4: With PR Summarization
+
+**Configuration:**
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+export OPENAI_API_KEY="sk-your_openai_key_here"
+```
+
+**Run commands:**
+```bash
+# PR summaries will use OpenAI API
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --format markdown
+```
+
+#### Example 5: Team Reports Setup
+
+Team reports require an additional team configuration file. Create `teams.json`:
+
+`teams.json`:
+```json
+{
+  "teams": [
+    {
+      "name": "backend-team",
+      "display_name": "Backend Team",
+      "department": "engineering",
+      "members": ["alice", "bob", "charlie"]
+    },
+    {
+      "name": "frontend-team",
+      "display_name": "Frontend Team",
+      "department": "engineering",
+      "members": ["diana", "eve"]
+    },
+    {
+      "name": "data-team",
+      "display_name": "Data Team",
+      "department": "data-science",
+      "members": ["frank", "grace"]
+    }
+  ]
+}
+```
+
+**Run team report:**
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+
+github-tools team-report \
+  --start-date 1m \
+  --end-date today \
+  --team-config teams.json \
+  --format markdown
+```
+
+### Configuration Reference
+
+#### Required Settings
+
+| Setting | Environment Variable | Description |
+|---------|---------------------|-------------|
+| GitHub Token | `GITHUB_TOKEN` | GitHub Personal Access Token with `repo`, `read:org`, `read:user` scopes |
+
+#### Optional Settings
+
+| Setting | Environment Variable | Default | Description |
+|---------|---------------------|---------|-------------|
+| Organization | `GITHUB_TOOLS_GITHUB_ORGANIZATION` | None | Default GitHub organization name |
+| Base URL | `GITHUB_TOOLS_GITHUB_BASE_URL` | `https://api.github.com` | GitHub API base URL (for Enterprise) |
+| Cache Directory | `GITHUB_TOOLS_CACHE_DIR` | `~/.github-tools/cache` | Directory for cached data |
+| Cache TTL (Recent) | `GITHUB_TOOLS_CACHE_TTL_HOURS` | `1` | Cache TTL in hours for recent data |
+| Cache TTL (Historical) | `GITHUB_TOOLS_CACHE_TTL_HOURS_HISTORICAL` | `24` | Cache TTL in hours for historical data |
+| Use SQLite | `GITHUB_TOOLS_USE_SQLITE` | `false` | Use SQLite for caching (for large datasets) |
+| OpenAI API Key | `OPENAI_API_KEY` | None | OpenAI API key for PR summarization |
+
+#### Special Purpose Settings
+
+| Setting | Environment Variable | Description |
+|---------|---------------------|-------------|
+| OpenAI API Key | `OPENAI_API_KEY` | Required only for `pr-summary-report` command |
+
+### GitHub Token Scopes
+
+Your GitHub Personal Access Token must have the following scopes:
+
+- **`repo`**: Full control of private repositories (required for accessing private repos)
+- **`read:org`**: Read organization membership (required for organization-level reports)
+- **`read:user`**: Read user profile information (required for user attribution)
+
+**Creating a GitHub Token:**
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Click "Generate new token (classic)"
+3. Select scopes: `repo`, `read:org`, `read:user`
+4. Generate and copy the token
+5. Set it as `GITHUB_TOKEN` environment variable
+
+### Verifying Configuration
+
+Test your configuration:
+
+```bash
+# Verify GitHub token is set
+echo $GITHUB_TOKEN
+
+# Test with a simple command
+github-tools developer-report \
+  --start-date 7d \
+  --end-date today \
+  --repository myorg/my-repo \
+  --format json
+```
+
+If configuration is incorrect, you'll see an error message indicating what's missing.
 
 ## Code Organization
 
