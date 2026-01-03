@@ -182,6 +182,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - [ ] T051 [P] Add additional edge case tests for rate limits, missing data, and large histories in `tests/integration/test_edge_cases.py`
 - [ ] T052 Performance profiling and optimization for large organizations (500 repos, 100K commits) in core analyzers and collectors
 - [ ] T053 [P] Verify privacy posture and documentation for internal-only outputs per `NFR-001` in `README.md` and tool help
+- [x] T054 [P] Implement JSON/TOML/YAML configuration file support in `src/github_tools/utils/config.py` (support nested and flat config structures, file format detection)
 
 ---
 
