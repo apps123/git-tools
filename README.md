@@ -248,17 +248,91 @@ export OPENAI_API_KEY="sk-your_key_here"
 
 ## Quick Start
 
-### Basic Developer Report
+### Step 1: Configure Your Environment
+
+**Option A: Environment Variables (Quick Setup)**
+```bash
+# Set your GitHub token (required)
+export GITHUB_TOKEN="ghp_your_token_here"
+
+# Optional: Set organization for organization-wide reports
+export GITHUB_TOOLS_GITHUB_ORGANIZATION="myorg"
+```
+
+**Option B: Configuration File (Recommended for Teams)**
+
+Create a configuration file in JSON, TOML, or YAML format:
+
+**`config.json` (JSON):**
+```json
+{
+  "github": {
+    "token": "${GITHUB_TOKEN}",
+    "organization": "myorg",
+    "base_url": "https://api.github.com"
+  },
+  "cache": {
+    "directory": "~/.github-tools/cache",
+    "ttl_hours": 24,
+    "use_sqlite": false
+  }
+}
+```
+
+**`config.toml` (TOML):**
+```toml
+[github]
+token = "${GITHUB_TOKEN}"  # Can use env var or actual token
+organization = "myorg"
+base_url = "https://api.github.com"
+
+[cache]
+directory = "~/.github-tools/cache"
+ttl_hours = 24
+use_sqlite = false
+```
+
+**`config.yaml` (YAML):**
+```yaml
+github:
+  token: ${GITHUB_TOKEN}  # Can use env var or actual token
+  organization: myorg
+  base_url: https://api.github.com
+
+cache:
+  directory: ~/.github-tools/cache
+  ttl_hours: 24
+  use_sqlite: false
+```
+
+**Note**: For security, prefer using environment variables for tokens. The `${GITHUB_TOKEN}` syntax in config files is a placeholder - you should set the actual token via environment variable.
+
+**Using the config file:**
+```bash
+# Use config file with any command
+github-tools --config config.json developer-report --start-date 30d --end-date today
+```
+
+### Step 2: Generate Reports
+
+#### Basic Developer Report
 
 ```bash
 # Generate a developer activity report for the last 30 days
+# Using environment variables
 github-tools developer-report \
+  --start-date 30d \
+  --end-date today \
+  --format markdown
+
+# Or using a config file
+github-tools --config config.json developer-report \
   --start-date 30d \
   --end-date today \
   --format markdown
 ```
 
-### Repository Analysis
+#### Repository Analysis
 
 ```bash
 # Analyze repository contributions for a specific period
@@ -269,15 +343,52 @@ github-tools repository-report \
   --output repo-analysis.json
 ```
 
-### Team Report
+#### Team Report
 
+**First, create a team configuration file:**
+
+`teams.json`:
+```json
+{
+  "teams": [
+    {
+      "name": "backend-team",
+      "display_name": "Backend Team",
+      "department": "engineering",
+      "members": ["alice", "bob", "charlie"]
+    },
+    {
+      "name": "frontend-team",
+      "display_name": "Frontend Team",
+      "department": "engineering",
+      "members": ["diana", "eve"]
+    }
+  ]
+}
+```
+
+**Then generate the team report:**
 ```bash
-# Generate team metrics (requires team configuration file)
 github-tools team-report \
   --start-date 1m \
   --end-date today \
   --team-config teams.json \
   --format markdown
+```
+
+### Complete Example with Configuration File
+
+```bash
+# 1. Create config.json (see Step 1, Option B above)
+# 2. Set GITHUB_TOKEN environment variable
+export GITHUB_TOKEN="ghp_your_token_here"
+
+# 3. Run any command with config file
+github-tools --config config.json developer-report \
+  --start-date 30d \
+  --end-date today \
+  --format markdown \
+  --output report.md
 ```
 
 ## CLI Commands
@@ -593,7 +704,86 @@ OPENAI_API_KEY=sk-your_key_here
 
 The tools automatically load `.env` files from the current directory or your home directory.
 
-#### Method 3: Command-Line Options
+#### Method 3: Configuration Files (JSON/TOML/YAML)
+
+Create a configuration file in JSON, TOML, or YAML format. Supports both nested and flat structures.
+
+**JSON Configuration (`config.json`):**
+
+Nested structure:
+```json
+{
+  "github": {
+    "token": "${GITHUB_TOKEN}",
+    "organization": "myorg",
+    "base_url": "https://api.github.com"
+  },
+  "cache": {
+    "directory": "~/.github-tools/cache",
+    "ttl_hours": 24,
+    "ttl_hours_historical": 24,
+    "use_sqlite": false
+  }
+}
+```
+
+Flat structure (also supported):
+```json
+{
+  "github_token": "${GITHUB_TOKEN}",
+  "github_organization": "myorg",
+  "github_base_url": "https://api.github.com",
+  "cache_dir": "~/.github-tools/cache",
+  "cache_ttl_hours": 24,
+  "use_sqlite": false
+}
+```
+
+**TOML Configuration (`config.toml`):**
+
+```toml
+[github]
+token = "${GITHUB_TOKEN}"  # Or use actual token (not recommended)
+organization = "myorg"
+base_url = "https://api.github.com"
+
+[cache]
+directory = "~/.github-tools/cache"
+ttl_hours = 24
+ttl_hours_historical = 24
+use_sqlite = false
+```
+
+**YAML Configuration (`config.yaml`):**
+
+```yaml
+github:
+  token: ${GITHUB_TOKEN}  # Or use actual token (not recommended)
+  organization: myorg
+  base_url: https://api.github.com
+
+cache:
+  directory: ~/.github-tools/cache
+  ttl_hours: 24
+  ttl_hours_historical: 24
+  use_sqlite: false
+```
+
+**Using configuration files:**
+```bash
+# Use config file with any command
+github-tools --config config.json developer-report --start-date 30d --end-date today
+
+# Config file settings can be overridden by environment variables
+GITHUB_TOKEN="different_token" github-tools --config config.json developer-report ...
+```
+
+**Note**: 
+- JSON support is built-in (no additional dependencies)
+- TOML support uses Python's built-in `tomllib` (Python 3.11+) - no additional dependencies needed
+- YAML support requires `pyyaml`: `pip install pyyaml` (optional dependency)
+
+#### Method 4: Command-Line Options
 
 Most settings can be overridden via command-line options:
 
@@ -604,6 +794,12 @@ github-tools --token ghp_another_token developer-report --start-date 30d --end-d
 # Override base URL for GitHub Enterprise
 github-tools --base-url https://github.company.com/api/v3 developer-report --start-date 30d --end-date today
 ```
+
+**Configuration Priority** (highest to lowest):
+1. Command-line options (`--token`, `--base-url`, etc.)
+2. Environment variables (`GITHUB_TOKEN`, `GITHUB_TOOLS_*`)
+3. Configuration file (`--config`)
+4. Default values
 
 ### Configuration Examples by Use Case
 
