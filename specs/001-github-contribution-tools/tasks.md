@@ -159,16 +159,19 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ### Tests for User Story 4a (write FIRST)
 
-- [ ] T055 [P] [US4a] Add unit tests for LLM provider interface abstraction in `tests/unit/test_llm_provider.py`
-- [ ] T056 [P] [US4a] Add unit tests for OpenAI provider refactoring in `tests/unit/test_openai_provider.py`
-- [ ] T057 [P] [US4a] Add unit tests for Claude local provider in `tests/unit/test_claude_local_provider.py`
-- [ ] T058 [P] [US4a] Add unit tests for Cursor provider in `tests/unit/test_cursor_provider.py`
-- [ ] T059 [P] [US4a] Add unit tests for Gemini provider in `tests/unit/test_gemini_provider.py`
-- [ ] T060 [P] [US4a] Add unit tests for generic HTTP provider in `tests/unit/test_generic_http_provider.py`
-- [ ] T061 [P] [US4a] Add unit tests for provider detection and registry in `tests/unit/test_provider_registry.py`
-- [ ] T062 [P] [US4a] Add integration test for local agent auto-detection in `tests/integration/test_local_agent_detection.py`
-- [ ] T063 [P] [US4a] Add integration test for PR summarization with local agents in `tests/integration/test_pr_summary_local_agents.py`
-- [ ] T064 [US4a] Add contract test for provider configuration in `tests/contract/test_llm_provider_contract.py`
+- [ ] T055 [P] [US4a] Add unit tests for LLM provider interface abstraction in `tests/unit/summarizers/providers/test_base.py`
+- [ ] T056 [P] [US4a] Add unit tests for OpenAI provider refactoring in `tests/unit/summarizers/providers/test_openai_provider.py`
+- [ ] T057 [P] [US4a] Add unit tests for Claude local provider in `tests/unit/summarizers/providers/test_claude_local_provider.py`
+- [ ] T058 [P] [US4a] Add unit tests for Cursor provider in `tests/unit/summarizers/providers/test_cursor_provider.py`
+- [ ] T059 [P] [US4a] Add unit tests for Gemini provider in `tests/unit/summarizers/providers/test_gemini_provider.py`
+- [ ] T060 [P] [US4a] Add unit tests for generic HTTP provider in `tests/unit/summarizers/providers/test_generic_http_provider.py`
+- [ ] T061 [P] [US4a] Add unit tests for provider registry and factory in `tests/unit/summarizers/providers/test_registry.py`
+- [ ] T061a [P] [US4a] Add unit tests for provider detection logic in `tests/unit/summarizers/providers/test_detector.py`
+- [ ] T062 [P] [US4a] Add integration test for provider auto-detection with priority ordering in `tests/integration/test_provider_detection.py`
+- [ ] T063 [P] [US4a] Add integration test for PR summarization with all providers in `tests/integration/test_pr_summary_local_agents.py`
+- [ ] T063a [P] [US4a] Add integration test for provider fallback and batch retry logic in `tests/integration/test_provider_fallback.py`
+- [ ] T063b [P] [US4a] Add integration test for batch processing retry with next available provider in `tests/integration/test_batch_retry_logic.py`
+- [ ] T064 [US4a] Add contract test for provider interface and configuration in `tests/contract/test_llm_provider_contract.py`
 
 ### Implementation for User Story 4a
 
@@ -179,10 +182,13 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - [ ] T069 [P] [US4a] Implement Cursor provider in `src/github_tools/summarizers/providers/cursor_provider.py`
 - [ ] T070 [P] [US4a] Implement Gemini provider in `src/github_tools/summarizers/providers/gemini_provider.py`
 - [ ] T071 [P] [US4a] Implement generic HTTP provider for OpenAI-compatible APIs in `src/github_tools/summarizers/providers/generic_http_provider.py`
-- [ ] T072 [P] [US4a] Implement provider auto-detection logic in `src/github_tools/summarizers/providers/detector.py`
-- [ ] T073 [US4a] Update `LLMSummarizer` to use provider interface in `src/github_tools/summarizers/llm_summarizer.py`
-- [ ] T074 [US4a] Add LLM provider configuration to `AppConfig` in `src/github_tools/utils/config.py`
-- [ ] T075 [US4a] Update `pr-summary-report` CLI command with `--llm-provider` option in `src/github_tools/cli/pr_summary_report.py`
+- [ ] T072 [P] [US4a] Implement provider auto-detection logic with priority ordering in `src/github_tools/summarizers/providers/detector.py`
+- [ ] T072a [P] [US4a] Implement retry logic with exponential backoff (1s, 2s, 4s) in provider base class in `src/github_tools/summarizers/providers/base.py`
+- [ ] T072b [US4a] Implement batch processing with automatic retry using next available provider in `src/github_tools/collectors/pr_summary_collector.py`
+- [ ] T073 [US4a] Refactor `LLMSummarizer` to use provider registry and interface in `src/github_tools/summarizers/llm_summarizer.py`
+- [ ] T074 [US4a] Add LLM provider configuration schema to `AppConfig` in `src/github_tools/utils/config.py` (support JSON/TOML/YAML config files)
+- [ ] T075 [US4a] Update `pr-summary-report` CLI command with `--llm-provider` option and provider-specific options in `src/github_tools/cli/pr_summary_report.py`
+- [ ] T075a [US4a] Implement error message formatting with provider detection status and configuration hints in `src/github_tools/summarizers/providers/detector.py`
 - [ ] T076 [US4a] Add configuration file examples and documentation for all providers (including Gemini) in `README.md` and `specs/001-github-contribution-tools/quickstart.md`
 
 **Checkpoint**: PR summarization works with local AI agents and cloud providers (Gemini); auto-detection functional; backward compatibility maintained.
@@ -232,7 +238,8 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - **Foundational (Phase 2)**: Depends on Setup completion – BLOCKS all user stories.  
 - **User Stories (Phases 3–7)**: All depend on Foundational phase completion.
   - User stories can proceed in parallel (if team capacity allows).
-  - Priority order from spec: P1 (US1), P2 (US2, US4), P3 (US3, US5).
+  - Priority order from spec: P1 (US1), P2 (US2, US4, US4a), P3 (US3, US5).
+  - **Phase 6a (US4a)**: Depends on Phase 6 (US4) completion.
 - **Polish (Phase 8)**: Depends on all desired user stories being complete.
 
 ### User Story Dependencies
@@ -241,6 +248,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - **User Story 2 (P2)**: Can start after Foundational – may share collectors with US1 but is independently testable.
 - **User Story 3 (P3)**: Can start after Foundational – depends on Developer/Contribution data but not on PR summaries.
 - **User Story 4 (P2)**: Can start after Foundational – depends on PR collectors and summarizers only.
+- **User Story 4a (P2 Enhancement)**: Must start after User Story 4 completion – extends PR summarization with multi-provider LLM support. Depends on existing LLMSummarizer implementation.
 - **User Story 5 (P3)**: Can start after Foundational – depends on historical metrics but does not require completion of other stories for basic functionality.
 
 ### Within Each User Story
@@ -260,6 +268,7 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
   - Contract, integration, and unit tests marked [P] (e.g., T013–T015a, T022–T024, T043–T045a) can be created in parallel.
   - Collector/analyzer implementations marked [P] (e.g., T016, T017, T025, T032, T038, T039, T046) can be developed in parallel across different modules.
 - Different user stories (US2, US3, US4, US5) can be developed in parallel after Phase 2, as long as their file paths do not conflict.
+- **User Story 4a**: Provider implementations (T068–T071) can be developed in parallel. Tests (T057–T060) can be written in parallel.
 
 ---
 
@@ -314,17 +323,17 @@ With multiple developers:
 
 ## Summary Metrics
 
-- **Total Tasks**: 76 (4 foundational classification tasks + 2 quality validation test tasks + 22 local agent tasks including Gemini)  
+- **Total Tasks**: 81 (4 foundational classification tasks + 2 quality validation test tasks + 27 local agent tasks including Gemini, retry logic, and batch processing enhancements)  
 - **Tasks per User Story**:
   - US1: 10 tasks (T013–T015a, T016–T021) including attribution accuracy validation  
   - US2: 7 tasks (T022–T028)  
   - US3: 7 tasks (T029–T034)  
   - US4: 8 tasks (T035–T042)  
-  - US4a: 22 tasks (T055–T076) local AI agent support enhancement (includes Gemini)
+  - US4a: 27 tasks (T055–T076 including T061a, T063a, T063b, T072a, T072b, T075a) local AI agent support enhancement (includes Gemini, retry logic, batch processing)
   - US5: 7 tasks (T043–T045a, T046–T048) including anomaly detection recall validation  
 - **Foundational Classification Tasks**: 4 tasks (T005a, T008a, T010a, T012a) for internal/external contributor identification
 - **Quality Validation Tests**: 2 tasks (T015a for attribution accuracy ≥95%, T045a for anomaly recall ≥80%) using curated sample datasets  
-- **Local Agent Enhancement Tasks**: 22 tasks (T055–T076) for supporting Cursor, Claude Desktop, Gemini, and generic local LLM providers
+- **Local Agent Enhancement Tasks**: 27 tasks (T055–T076 with sub-tasks) for supporting Cursor, Claude Desktop, Gemini, and generic local LLM providers, including retry logic, batch processing enhancements, and comprehensive error handling
 - **Parallelizable Tasks ([P])**: Majority of tests and core analyzers/collectors (explicitly marked).  
 - **Suggested MVP Scope**: Phases 1–3 (Setup, Foundational, User Story 1).
 

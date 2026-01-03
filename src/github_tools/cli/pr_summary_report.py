@@ -49,9 +49,32 @@ logger = get_logger(__name__)
     help="Base branch to filter PRs (default: main)",
 )
 @click.option(
+    "--llm-provider",
+    type=click.Choice(["openai", "claude-local", "cursor", "gemini", "generic", "auto"], case_sensitive=False),
+    default="auto",
+    help="LLM provider to use (default: auto-detect available provider)",
+)
+@click.option(
     "--openai-api-key",
     envvar="OPENAI_API_KEY",
-    help="OpenAI API key (or set OPENAI_API_KEY env var)",
+    help="OpenAI API key (or set OPENAI_API_KEY env var) - required if using OpenAI provider",
+)
+@click.option(
+    "--gemini-api-key",
+    envvar="GOOGLE_API_KEY",
+    help="Google Gemini API key (or set GOOGLE_API_KEY env var) - required if using Gemini provider",
+)
+@click.option(
+    "--claude-endpoint",
+    envvar="CLAUDE_ENDPOINT",
+    default="http://localhost:11434",
+    help="Claude Desktop API endpoint (default: http://localhost:11434)",
+)
+@click.option(
+    "--cursor-endpoint",
+    envvar="CURSOR_ENDPOINT",
+    default="http://localhost:8080",
+    help="Cursor Agent API endpoint (default: http://localhost:8080)",
 )
 @click.option(
     "--format",
@@ -79,7 +102,11 @@ def pr_summary_report(
     end_date: str,
     repository: tuple,
     base_branch: str,
+    llm_provider: str,
     openai_api_key: Optional[str],
+    gemini_api_key: Optional[str],
+    claude_endpoint: str,
+    cursor_endpoint: str,
     format: str,
     output: Optional[Path],
     no_cache: bool,
@@ -114,16 +141,6 @@ def pr_summary_report(
             period_type="custom",
         )
         
-        # Get OpenAI API key
-        api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            logger.error("OpenAI API key required for PR summarization")
-            click.echo(
-                "Error: OpenAI API key required. Set OPENAI_API_KEY env var or use --openai-api-key",
-                err=True,
-            )
-            sys.exit(1)
-        
         # Initialize components
         github_config = config.get_github_config()
         cache_config = config.get_cache_config()
@@ -132,10 +149,37 @@ def pr_summary_report(
         rate_limiter = RateLimiter()
         cache = FileCache(cache_config) if not no_cache else None
         
+        # Build LLM provider configuration
+        provider_config = config.get_llm_provider_config()
+        
+        # Override with CLI options
+        if openai_api_key:
+            provider_config.setdefault("openai", {})["api_key"] = openai_api_key
+        if gemini_api_key:
+            provider_config.setdefault("gemini", {})["api_key"] = gemini_api_key
+        if claude_endpoint:
+            provider_config.setdefault("claude_local", {})["endpoint"] = claude_endpoint
+        if cursor_endpoint:
+            provider_config.setdefault("cursor", {})["endpoint"] = cursor_endpoint
+        
+        # Determine provider name
+        provider_name = None if llm_provider == "auto" else llm_provider
+        
+        # Initialize summarizer with provider
+        try:
+            summarizer = LLMSummarizer(
+                provider_name=provider_name,
+                provider_config=provider_config,
+                auto_detect=(llm_provider == "auto"),
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize LLM provider: {e}")
+            click.echo(f"Error: Failed to initialize LLM provider: {e}", err=True)
+            sys.exit(1)
+        
         collector = ContributionCollector(github_client, rate_limiter, cache)
-        summarizer = LLMSummarizer(api_key=api_key)
         context_analyzer = ContextAnalyzer(github_client)
-        pr_collector = PRSummaryCollector(summarizer)
+        pr_collector = PRSummaryCollector(summarizer, auto_retry=True)
         report_generator = ReportGenerator()
         
         # Get organization repositories (or use specified ones)
