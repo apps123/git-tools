@@ -604,6 +604,28 @@ github-tools pr-summary-report \
   --openai-api-key sk-... \
   --format markdown
 
+# Use Google Gemini API
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider gemini \
+  --gemini-api-key ${GOOGLE_API_KEY} \
+  --format markdown
+
+# Use local Claude Desktop (if running)
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider claude-local \
+  --format markdown
+
+# Use local Cursor Agent (if running)
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider cursor \
+  --format markdown
+
 # Specific repository, custom base branch
 github-tools pr-summary-report \
   --start-date 2024-12-01 \
@@ -761,6 +783,23 @@ Nested structure:
     "ttl_hours": 24,
     "ttl_hours_historical": 24,
     "use_sqlite": false
+  },
+  "llm_provider_config": {
+    "openai": {
+      "api_key": "${OPENAI_API_KEY}",
+      "model": "gpt-3.5-turbo",
+      "timeout": 60
+    },
+    "gemini": {
+      "api_key": "${GOOGLE_API_KEY}",
+      "model": "gemini-pro",
+      "timeout": 60
+    },
+    "claude_local": {
+      "endpoint": "http://localhost:11434",
+      "model": "claude-3-5-sonnet",
+      "timeout": 30
+    }
   }
 }
 ```
@@ -805,7 +844,23 @@ cache:
   ttl_hours: 24
   ttl_hours_historical: 24
   use_sqlite: false
+
+llm_provider_config:
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    model: gpt-3.5-turbo
+    timeout: 60
+  gemini:
+    api_key: ${GOOGLE_API_KEY}
+    model: gemini-pro
+    timeout: 60
+  claude_local:
+    endpoint: http://localhost:11434
+    model: claude-3-5-sonnet
+    timeout: 30
 ```
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+read_lints
 
 **Using configuration files:**
 ```bash
@@ -970,13 +1025,18 @@ github-tools team-report \
 | Cache TTL (Recent) | `GITHUB_TOOLS_CACHE_TTL_HOURS` | `1` | Cache TTL in hours for recent data |
 | Cache TTL (Historical) | `GITHUB_TOOLS_CACHE_TTL_HOURS_HISTORICAL` | `24` | Cache TTL in hours for historical data |
 | Use SQLite | `GITHUB_TOOLS_USE_SQLITE` | `false` | Use SQLite for caching (for large datasets) |
-| OpenAI API Key | `OPENAI_API_KEY` | None | OpenAI API key for PR summarization |
+| OpenAI API Key | `OPENAI_API_KEY` | None | OpenAI API key for PR summarization (openai provider) |
+| Google API Key | `GOOGLE_API_KEY` | None | Google Gemini API key for PR summarization (gemini provider) |
+| LLM Provider | `--llm-provider` | `auto` | LLM provider to use (openai, claude-local, cursor, gemini, generic, auto) |
+| Claude Endpoint | `CLAUDE_ENDPOINT` | `http://localhost:11434` | Claude Desktop API endpoint |
+| Cursor Endpoint | `CURSOR_ENDPOINT` | `http://localhost:8080` | Cursor Agent API endpoint |
 
 #### Special Purpose Settings
 
 | Setting | Environment Variable | Description |
 |---------|---------------------|-------------|
-| OpenAI API Key | `OPENAI_API_KEY` | Required only for `pr-summary-report` command |
+| OpenAI API Key | `OPENAI_API_KEY` | Required for `pr-summary-report` with `--llm-provider openai` |
+| Google API Key | `GOOGLE_API_KEY` | Required for `pr-summary-report` with `--llm-provider gemini` |
 
 ### GitHub Token Scopes
 
