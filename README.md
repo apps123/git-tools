@@ -553,17 +553,55 @@ github-tools pr-summary-report [OPTIONS]
 - `--end-date <date>` (required): End date
 - `--repository, -r <repo>`: Filter by repository (can specify multiple times)
 - `--base-branch <branch>`: Base branch to filter PRs (default: main)
-- `--openai-api-key <key>`: OpenAI API key (or set OPENAI_API_KEY env var)
+- `--llm-provider <provider>`: LLM provider for summarization (openai, claude-local, cursor, auto). Default: auto (detects available)
+- `--openai-api-key <key>`: OpenAI API key (or set OPENAI_API_KEY env var, required for OpenAI provider)
 - `--format, -f <format>`: Output format (default: markdown)
 - `--output, -o <path>`: Output file path
 - `--no-cache`: Disable caching
 
+**Note**: PR summarization supports multiple LLM providers:
+- **OpenAI API** (default, requires API key): Cloud-based summarization
+- **Claude Desktop** (`--llm-provider claude-local`): Local Claude agent for enterprise use
+- **Cursor Agent** (`--llm-provider cursor`): Local Cursor agent support
+- **Google Gemini** (`--llm-provider gemini`): Google's Gemini API (requires GOOGLE_API_KEY)
+- **Auto-detect** (`--llm-provider auto` or omit): Automatically detects and uses available providers
+
 **Examples:**
 ```bash
-# Weekly PR summary
+# Weekly PR summary (auto-detects local agents if available)
 github-tools pr-summary-report \
   --start-date 1w \
   --end-date today \
+  --format markdown
+
+# Using Claude Desktop (local, enterprise-friendly)
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider claude-local \
+  --format markdown
+
+# Using Cursor Agent (local)
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider cursor \
+  --format markdown
+
+# Using Google Gemini API
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider gemini \
+  --gemini-api-key ${GOOGLE_API_KEY} \
+  --format markdown
+
+# Explicitly use OpenAI API
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider openai \
+  --openai-api-key sk-... \
   --format markdown
 
 # Specific repository, custom base branch
