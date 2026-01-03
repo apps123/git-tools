@@ -151,6 +151,44 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ---
 
+## Phase 6a: User Story 4a - Local AI Agent Support for PR Summarization (Priority: P2 - Enhancement)
+
+**Goal**: Enable PR summarization using locally installed AI agents (Cursor, Claude Desktop) and cloud providers (Gemini) as alternatives to OpenAI API for enterprise use cases.  
+**Parent Story**: User Story 4  
+**Independent Test**: Run `pr-summary-report` with `--llm-provider claude-local` or `--llm-provider gemini` and verify summaries are generated using the selected provider (local agents avoid external API calls, cloud providers use their respective APIs).
+
+### Tests for User Story 4a (write FIRST)
+
+- [ ] T055 [P] [US4a] Add unit tests for LLM provider interface abstraction in `tests/unit/test_llm_provider.py`
+- [ ] T056 [P] [US4a] Add unit tests for OpenAI provider refactoring in `tests/unit/test_openai_provider.py`
+- [ ] T057 [P] [US4a] Add unit tests for Claude local provider in `tests/unit/test_claude_local_provider.py`
+- [ ] T058 [P] [US4a] Add unit tests for Cursor provider in `tests/unit/test_cursor_provider.py`
+- [ ] T059 [P] [US4a] Add unit tests for Gemini provider in `tests/unit/test_gemini_provider.py`
+- [ ] T060 [P] [US4a] Add unit tests for generic HTTP provider in `tests/unit/test_generic_http_provider.py`
+- [ ] T061 [P] [US4a] Add unit tests for provider detection and registry in `tests/unit/test_provider_registry.py`
+- [ ] T062 [P] [US4a] Add integration test for local agent auto-detection in `tests/integration/test_local_agent_detection.py`
+- [ ] T063 [P] [US4a] Add integration test for PR summarization with local agents in `tests/integration/test_pr_summary_local_agents.py`
+- [ ] T064 [US4a] Add contract test for provider configuration in `tests/contract/test_llm_provider_contract.py`
+
+### Implementation for User Story 4a
+
+- [ ] T065 [P] [US4a] Create LLM provider abstract base class in `src/github_tools/summarizers/providers/base.py`
+- [ ] T066 [P] [US4a] Refactor existing OpenAI logic into `OpenAIProvider` class in `src/github_tools/summarizers/providers/openai_provider.py`
+- [ ] T067 [P] [US4a] Implement provider registry and factory in `src/github_tools/summarizers/providers/registry.py`
+- [ ] T068 [P] [US4a] Implement Claude local provider in `src/github_tools/summarizers/providers/claude_local_provider.py`
+- [ ] T069 [P] [US4a] Implement Cursor provider in `src/github_tools/summarizers/providers/cursor_provider.py`
+- [ ] T070 [P] [US4a] Implement Gemini provider in `src/github_tools/summarizers/providers/gemini_provider.py`
+- [ ] T071 [P] [US4a] Implement generic HTTP provider for OpenAI-compatible APIs in `src/github_tools/summarizers/providers/generic_http_provider.py`
+- [ ] T072 [P] [US4a] Implement provider auto-detection logic in `src/github_tools/summarizers/providers/detector.py`
+- [ ] T073 [US4a] Update `LLMSummarizer` to use provider interface in `src/github_tools/summarizers/llm_summarizer.py`
+- [ ] T074 [US4a] Add LLM provider configuration to `AppConfig` in `src/github_tools/utils/config.py`
+- [ ] T075 [US4a] Update `pr-summary-report` CLI command with `--llm-provider` option in `src/github_tools/cli/pr_summary_report.py`
+- [ ] T076 [US4a] Add configuration file examples and documentation for all providers (including Gemini) in `README.md` and `specs/001-github-contribution-tools/quickstart.md`
+
+**Checkpoint**: PR summarization works with local AI agents and cloud providers (Gemini); auto-detection functional; backward compatibility maintained.
+
+---
+
 ## Phase 7: User Story 5 - Identify Contribution Trends and Anomalies (Priority: P3)
 
 **Goal**: Detect significant changes and anomalies in contribution patterns over time for developers, teams, and repositories.  
@@ -276,15 +314,17 @@ With multiple developers:
 
 ## Summary Metrics
 
-- **Total Tasks**: 59 (4 foundational classification tasks + 2 quality validation test tasks)  
+- **Total Tasks**: 76 (4 foundational classification tasks + 2 quality validation test tasks + 22 local agent tasks including Gemini)  
 - **Tasks per User Story**:
   - US1: 10 tasks (T013–T015a, T016–T021) including attribution accuracy validation  
   - US2: 7 tasks (T022–T028)  
   - US3: 7 tasks (T029–T034)  
   - US4: 8 tasks (T035–T042)  
+  - US4a: 22 tasks (T055–T076) local AI agent support enhancement (includes Gemini)
   - US5: 7 tasks (T043–T045a, T046–T048) including anomaly detection recall validation  
 - **Foundational Classification Tasks**: 4 tasks (T005a, T008a, T010a, T012a) for internal/external contributor identification
 - **Quality Validation Tests**: 2 tasks (T015a for attribution accuracy ≥95%, T045a for anomaly recall ≥80%) using curated sample datasets  
+- **Local Agent Enhancement Tasks**: 22 tasks (T055–T076) for supporting Cursor, Claude Desktop, Gemini, and generic local LLM providers
 - **Parallelizable Tasks ([P])**: Majority of tests and core analyzers/collectors (explicitly marked).  
 - **Suggested MVP Scope**: Phases 1–3 (Setup, Foundational, User Story 1).
 
