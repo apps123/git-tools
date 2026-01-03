@@ -69,6 +69,31 @@ class CacheConfig(BaseModel):
         return v
 
 
+class LLMProviderConfig(BaseModel):
+    """LLM provider configuration."""
+    
+    openai: Optional[Dict[str, Any]] = Field(
+        None,
+        description="OpenAI provider configuration (api_key, model, base_url, timeout, max_retries)"
+    )
+    claude_local: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Claude Desktop local provider configuration (endpoint, model, timeout, max_retries)"
+    )
+    cursor: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Cursor Agent provider configuration (endpoint, model, timeout, max_retries)"
+    )
+    gemini: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Google Gemini provider configuration (api_key, model, timeout, max_retries)"
+    )
+    generic: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Generic HTTP provider configuration (endpoint, model, api_key, headers, timeout, max_retries)"
+    )
+
+
 class AppConfig(BaseSettings):
     """Application configuration."""
     
@@ -79,6 +104,8 @@ class AppConfig(BaseSettings):
     cache_ttl_hours: int = Field(default=1, description="Cache TTL for recent data")
     cache_ttl_hours_historical: int = Field(default=24, description="Cache TTL for historical data")
     use_sqlite: bool = Field(default=False, description="Use SQLite for caching")
+    llm_provider: Optional[str] = Field(None, description="Default LLM provider name (openai, claude-local, cursor, gemini, generic)")
+    llm_provider_config: Optional[Dict[str, Dict[str, Any]]] = Field(None, description="LLM provider configurations")
     
     class Config:
         """Pydantic settings configuration."""
@@ -110,6 +137,29 @@ class AppConfig(BaseSettings):
             cache_ttl_hours_historical=self.cache_ttl_hours_historical,
             use_sqlite=self.use_sqlite,
         )
+    
+    def get_llm_provider_config(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Get LLM provider configuration dictionary.
+        
+        Returns:
+            Dictionary mapping provider names to their configuration dictionaries
+        """
+        config = self.llm_provider_config or {}
+        
+        # Add OpenAI config from environment if not in config
+        if "openai" not in config:
+            openai_key = os.getenv("OPENAI_API_KEY")
+            if openai_key:
+                config["openai"] = {"api_key": openai_key}
+        
+        # Add Gemini config from environment if not in config
+        if "gemini" not in config:
+            gemini_key = os.getenv("GOOGLE_API_KEY")
+            if gemini_key:
+                config["gemini"] = {"api_key": gemini_key}
+        
+        return config
 
 
 def _load_json_config(config_path: Path) -> Dict[str, Any]:
