@@ -6,6 +6,68 @@ from typing import Any, Dict
 class MarkdownFormatter:
     """Formatter for Markdown output format."""
     
+    @staticmethod
+    def _format_pr_with_dimensions(pr: Dict[str, Any]) -> List[str]:
+        """
+        Format PR summary with multi-dimensional analysis if available.
+        
+        Args:
+            pr: PR summary dictionary
+        
+        Returns:
+            List of formatted lines
+        """
+        lines = []
+        
+        # Check if multi-dimensional analysis is available
+        if 'dimensions' in pr or 'formatted' in pr:
+            # Use formatted multi-dimensional summary if available
+            if 'formatted' in pr and pr['formatted']:
+                formatted_lines = pr['formatted'].split('\n')
+                for line in formatted_lines:
+                    lines.append(line)
+            elif 'dimensions' in pr:
+                # Format dimensions manually
+                lines.append(f"* Summary: {pr.get('summary', pr['title'])}")
+                dimensions = pr['dimensions']
+                
+                emoji_map = {
+                    "security": "⚠️",
+                    "cost": "💰",
+                    "operational": "📈",
+                    "architectural": "🏗️",
+                    "mentorship": "🤝",
+                    "data_governance": "🏛️",
+                    "ai_governance": "🤖",
+                }
+                
+                label_map = {
+                    "security": "Security Impact",
+                    "cost": "Cost/FinOps Impact",
+                    "operational": "Operational Impact",
+                    "architectural": "Architectural Integrity",
+                    "mentorship": "Mentorship Insight",
+                    "data_governance": "Data Governance",
+                    "ai_governance": "AI Governance",
+                }
+                
+                dimension_order = ["security", "cost", "operational", "architectural", "mentorship", "data_governance", "ai_governance"]
+                
+                for dim_name in dimension_order:
+                    if dim_name in dimensions:
+                        dim = dimensions[dim_name]
+                        if dim.get('is_applicable', True):
+                            emoji = emoji_map.get(dim_name, "")
+                            label = label_map.get(dim_name, dim_name.replace("_", " ").title())
+                            level = dim.get('level', 'N/A')
+                            description = dim.get('description', '')
+                            lines.append(f"* {emoji} {label}: {level}. {description}")
+        else:
+            # Standard summary format
+            lines.append(pr['summary'])
+        
+        return lines
+    
     def format_developer_report(self, report_data: Dict[str, Any]) -> str:
         """
         Format developer report as Markdown.
@@ -199,22 +261,26 @@ class MarkdownFormatter:
                 lines.append("")
                 
                 for pr in repo_prs:
-                    lines.append(f"### {pr['title']}")
+                    pr_id = pr.get('id', pr.get('number', ''))
+                    title_suffix = f" (#{pr_id})" if pr_id else ""
+                    lines.append(f"### {pr['title']}{title_suffix}")
                     lines.append("")
                     lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                     lines.append("")
-                    lines.append(pr['summary'])
+                    lines.extend(self._format_pr_with_dimensions(pr))
                     lines.append("")
         else:
             # List all PRs
             lines.append("## Pull Requests")
             lines.append("")
             for pr in prs:
-                lines.append(f"### {pr['title']} ({pr['repository']})")
+                pr_id = pr.get('id', pr.get('number', ''))
+                title_suffix = f" (#{pr_id})" if pr_id else ""
+                lines.append(f"### {pr['title']}{title_suffix} ({pr['repository']})")
                 lines.append("")
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
-                lines.append(pr['summary'])
+                lines.extend(self._format_pr_with_dimensions(pr))
                 lines.append("")
         
         return "\n".join(lines)
@@ -478,22 +544,26 @@ class MarkdownFormatter:
                 lines.append("")
                 
                 for pr in repo_prs:
-                    lines.append(f"### {pr['title']}")
+                    pr_id = pr.get('id', pr.get('number', ''))
+                    title_suffix = f" (#{pr_id})" if pr_id else ""
+                    lines.append(f"### {pr['title']}{title_suffix}")
                     lines.append("")
                     lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                     lines.append("")
-                    lines.append(pr['summary'])
+                    lines.extend(self._format_pr_with_dimensions(pr))
                     lines.append("")
         else:
             # List all PRs
             lines.append("## Pull Requests")
             lines.append("")
             for pr in prs:
-                lines.append(f"### {pr['title']} ({pr['repository']})")
+                pr_id = pr.get('id', pr.get('number', ''))
+                title_suffix = f" (#{pr_id})" if pr_id else ""
+                lines.append(f"### {pr['title']}{title_suffix} ({pr['repository']})")
                 lines.append("")
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
-                lines.append(pr['summary'])
+                lines.extend(self._format_pr_with_dimensions(pr))
                 lines.append("")
         
         return "\n".join(lines)
@@ -670,22 +740,26 @@ class MarkdownFormatter:
                 lines.append("")
                 
                 for pr in repo_prs:
-                    lines.append(f"### {pr['title']}")
+                    pr_id = pr.get('id', pr.get('number', ''))
+                    title_suffix = f" (#{pr_id})" if pr_id else ""
+                    lines.append(f"### {pr['title']}{title_suffix}")
                     lines.append("")
                     lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                     lines.append("")
-                    lines.append(pr['summary'])
+                    lines.extend(self._format_pr_with_dimensions(pr))
                     lines.append("")
         else:
             # List all PRs
             lines.append("## Pull Requests")
             lines.append("")
             for pr in prs:
-                lines.append(f"### {pr['title']} ({pr['repository']})")
+                pr_id = pr.get('id', pr.get('number', ''))
+                title_suffix = f" (#{pr_id})" if pr_id else ""
+                lines.append(f"### {pr['title']}{title_suffix} ({pr['repository']})")
                 lines.append("")
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
-                lines.append(pr['summary'])
+                lines.extend(self._format_pr_with_dimensions(pr))
                 lines.append("")
         
         return "\n".join(lines)
@@ -856,22 +930,26 @@ class MarkdownFormatter:
                 lines.append("")
                 
                 for pr in repo_prs:
-                    lines.append(f"### {pr['title']}")
+                    pr_id = pr.get('id', pr.get('number', ''))
+                    title_suffix = f" (#{pr_id})" if pr_id else ""
+                    lines.append(f"### {pr['title']}{title_suffix}")
                     lines.append("")
                     lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                     lines.append("")
-                    lines.append(pr['summary'])
+                    lines.extend(self._format_pr_with_dimensions(pr))
                     lines.append("")
         else:
             # List all PRs
             lines.append("## Pull Requests")
             lines.append("")
             for pr in prs:
-                lines.append(f"### {pr['title']} ({pr['repository']})")
+                pr_id = pr.get('id', pr.get('number', ''))
+                title_suffix = f" (#{pr_id})" if pr_id else ""
+                lines.append(f"### {pr['title']}{title_suffix} ({pr['repository']})")
                 lines.append("")
                 lines.append(f"**Author**: {pr['author']} | **Created**: {pr['created_at']} | **State**: {pr.get('state', 'unknown')}")
                 lines.append("")
-                lines.append(pr['summary'])
+                lines.extend(self._format_pr_with_dimensions(pr))
                 lines.append("")
         
         return "\n".join(lines)
