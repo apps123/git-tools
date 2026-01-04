@@ -12,6 +12,7 @@ from github_tools.analyzers.repository_analyzer import RepositoryAnalyzer
 from github_tools.api.client import GitHubClient
 from github_tools.api.rate_limiter import RateLimiter
 from github_tools.collectors.contribution_collector import ContributionCollector
+from github_tools.collectors.pr_file_collector import PRFileCollector
 from github_tools.collectors.pr_summary_collector import PRSummaryCollector
 from github_tools.models.time_period import TimePeriod
 from github_tools.reports.generator import ReportGenerator
@@ -77,6 +78,13 @@ logger = get_logger(__name__)
     help="Cursor Agent API endpoint (default: http://localhost:8080)",
 )
 @click.option(
+    "--dimensional-analysis",
+    "--multi-dimensional",
+    is_flag=True,
+    default=False,
+    help="Enable multi-dimensional impact analysis (Security, Cost, Operations, Architecture, Mentorship, Data Governance, AI Governance)",
+)
+@click.option(
     "--format",
     "-f",
     type=click.Choice(["json", "markdown", "csv"], case_sensitive=False),
@@ -107,6 +115,7 @@ def pr_summary_report(
     gemini_api_key: Optional[str],
     claude_endpoint: str,
     cursor_endpoint: str,
+    dimensional_analysis: bool,
     format: str,
     output: Optional[Path],
     no_cache: bool,
@@ -178,6 +187,7 @@ def pr_summary_report(
             sys.exit(1)
         
         collector = ContributionCollector(github_client, rate_limiter, cache)
+        pr_file_collector = PRFileCollector(github_client, rate_limiter)
         context_analyzer = ContextAnalyzer(github_client)
         pr_collector = PRSummaryCollector(summarizer, auto_retry=True)
         report_generator = ReportGenerator()
@@ -249,13 +259,86 @@ def pr_summary_report(
             # Get repository context
             context = context_analyzer.get_repository_context(repo)
             
-            # Generate summaries
-            repo_summaries = pr_collector.collect_summaries(
-                repo_prs,
-                time_period,
-                repository_context=context,
-            )
-            summaries.extend(repo_summaries)
+            if dimensional_analysis:
+                # Generate multi-dimensional summaries
+                logger.info(f"Generating multi-dimensional analysis for {len(repo_prs)} PRs...")
+                for pr in repo_prs:
+                    try:
+                        # Collect PR files
+                        pr_number = pr.metadata.get("number") if pr.metadata else None
+                        if pr_number:
+                            files = pr_file_collector.collect_pr_files(repo, pr_number)
+                        else:
+                            logger.warning(f"PR {pr.id} missing number in metadata, skipping file collection")
+                            files = []
+                        
+                        # Generate dimensional analysis
+                        dimensional_result = summarizer.summarize_dimensional(
+                            pr,
+                            files,
+                            repository_context=context,
+                            use_llm=True,
+                        )
+                        
+                        summary_dict = {
+                            "id": pr.id,
+                            "title": pr.title,
+                            "repository": pr.repository,
+                            "author": pr.developer,
+                            "created_at": pr.timestamp.isoformat(),
+                            "state": pr.state,
+                            "summary": dimensional_result.get("summary", pr.title),
+                            "dimensions": dimensional_result.get("dimensions", {}),
+                            "formatted": dimensional_result.get("formatted", ""),
+                            "provider": summarizer.provider.get_metadata().get("name"),
+                        }
+                        
+                        if pr.metadata:
+                            if "number" in pr.metadata:
+                                summary_dict["number"] = pr.metadata["number"]
+                            if "merged" in pr.metadata:
+                                summary_dict["merged"] = pr.metadata["merged"]
+                        
+                        summaries.append(summary_dict)
+                    except Exception as e:
+                        logger.warning(f"Failed to generate dimensional analysis for PR {pr.id}: {e}")
+                        # Fallback to regular summary
+                        try:
+                            regular_summary = summarizer.summarize(pr, context)
+                            summary_dict = {
+                                "id": pr.id,
+                                "title": pr.title,
+                                "repository": pr.repository,
+                                "author": pr.developer,
+                                "created_at": pr.timestamp.isoformat(),
+                                "state": pr.state,
+                                "summary": regular_summary,
+                                "provider": summarizer.provider.get_metadata().get("name"),
+                            }
+                            if pr.metadata:
+                                if "number" in pr.metadata:
+                                    summary_dict["number"] = pr.metadata["number"]
+                            summaries.append(summary_dict)
+                        except Exception as e2:
+                            logger.error(f"Failed to generate any summary for PR {pr.id}: {e2}")
+                            summaries.append({
+                                "id": pr.id,
+                                "title": pr.title,
+                                "repository": pr.repository,
+                                "author": pr.developer,
+                                "created_at": pr.timestamp.isoformat(),
+                                "state": pr.state,
+                                "summary": f"Summary unavailable: {str(e2)}",
+                                "error": True,
+                            })
+            else:
+                # Generate standard summaries
+                repo_summaries = pr_collector.collect_summaries(
+                    repo_prs,
+                    time_period,
+                    repository_context=context,
+                )
+                summaries.extend(repo_summaries)
         
         # Generate report
         logger.info("Generating report...")

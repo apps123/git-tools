@@ -1,6 +1,6 @@
 """LLM-based PR summarization using provider abstraction."""
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from github_tools.models.contribution import Contribution
 from github_tools.summarizers.providers import (
@@ -10,6 +10,10 @@ from github_tools.summarizers.providers import (
     get_detection_status,
 )
 from github_tools.summarizers.providers.registry import ProviderRegistry
+from github_tools.summarizers.file_pattern_detector import PRFile
+from github_tools.summarizers.multi_dimensional_analyzer import MultiDimensionalAnalyzer
+from github_tools.summarizers.prompts.dimensional_prompts import create_dimensional_prompt
+from github_tools.summarizers.parsers.dimensional_parser import DimensionalParser
 from github_tools.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -163,6 +167,152 @@ class LLMSummarizer:
             logger.error(f"Failed to generate PR summary: {e}")
             # Fallback to simple summary
             return self._fallback_summary(title, body)
+    
+    def summarize_dimensional(
+        self,
+        contribution: Contribution,
+        files: List[PRFile],
+        repository_context: Optional[str] = None,
+        use_llm: bool = True,
+    ) -> Dict[str, any]:
+        """
+        Generate multi-dimensional analysis summary for a pull request.
+        
+        Args:
+            contribution: PR contribution to analyze
+            files: List of PRFile objects representing changed files
+            repository_context: Optional repository context/description
+            use_llm: If True, use LLM for enhanced analysis; otherwise use rule-based only
+        
+        Returns:
+            Dictionary with 'summary' and 'dimensions' keys
+        """
+        if contribution.type != "pull_request":
+            raise ValueError(f"Expected pull_request, got {contribution.type}")
+        
+        # Initialize dimensional analyzer if needed
+        if self._dimensional_analyzer is None:
+            self._dimensional_analyzer = MultiDimensionalAnalyzer()
+        
+        # Extract PR context
+        title = contribution.title or ""
+        body = contribution.metadata.get("body", "") if contribution.metadata else ""
+        
+        pr_context = {
+            "title": title,
+            "body": body,
+            "repository": contribution.repository,
+        }
+        
+        if use_llm:
+            try:
+                # Use LLM for enhanced dimensional analysis
+                return self._llm_dimensional_analysis(
+                    pr_context, files, repository_context
+                )
+            except Exception as e:
+                logger.warning(f"LLM dimensional analysis failed, falling back to rule-based: {e}")
+                # Fall through to rule-based analysis
+        
+        # Rule-based dimensional analysis (fallback)
+        dimensional_results = self._dimensional_analyzer.analyze(pr_context, files)
+        
+        # Generate base summary
+        base_summary = title
+        if body:
+            # Use first sentence of body as summary
+            first_sentence = body.split('.')[0] if '.' in body else body[:100]
+            base_summary = f"{title}: {first_sentence}"
+        
+        # Format summary using orchestrator
+        formatted_summary = self._dimensional_analyzer.format_summary(
+            title, base_summary, dimensional_results, use_emoji=True
+        )
+        
+        return {
+            "summary": base_summary,
+            "dimensions": {
+                name: {
+                    "level": result.level,
+                    "description": result.description,
+                    "is_applicable": result.is_applicable,
+                }
+                for name, result in dimensional_results.items()
+            },
+            "formatted": formatted_summary,
+        }
+    
+    def _llm_dimensional_analysis(
+        self,
+        pr_context: Dict[str, str],
+        files: List[PRFile],
+        repository_context: Optional[str] = None,
+    ) -> Dict[str, any]:
+        """
+        Perform LLM-based dimensional analysis.
+        
+        Args:
+            pr_context: PR context dictionary
+            files: List of changed files
+            repository_context: Optional repository context
+        
+        Returns:
+            Parsed dimensional analysis results
+        """
+        # Get file patterns
+        if self._dimensional_analyzer is None:
+            self._dimensional_analyzer = MultiDimensionalAnalyzer()
+        
+        file_patterns = self._dimensional_analyzer.pattern_detector.detect_patterns(files)
+        
+        # Create prompt
+        system_prompt, user_prompt = create_dimensional_prompt(
+            pr_context["title"],
+            pr_context.get("body"),
+            files,
+            file_patterns,
+            repository_context,
+        )
+        
+        # Call LLM
+        try:
+            response = self.provider.summarize(
+                user_prompt,
+                system_prompt=system_prompt,
+                max_tokens=800,  # More tokens for structured analysis
+                temperature=0.3,
+            )
+            
+            # Parse response
+            parser = DimensionalParser()
+            parsed = parser.parse_response(response)
+            
+            # Convert to dimension results for consistency
+            dimension_results = parser.to_dimension_results(parsed)
+            
+            # Format summary
+            formatted_summary = self._dimensional_analyzer.format_summary(
+                pr_context["title"],
+                parsed.get("summary", pr_context["title"]),
+                dimension_results,
+                use_emoji=True,
+            )
+            
+            return {
+                "summary": parsed.get("summary", pr_context["title"]),
+                "dimensions": {
+                    name: {
+                        "level": result.level,
+                        "description": result.description,
+                        "is_applicable": result.is_applicable,
+                    }
+                    for name, result in dimension_results.items()
+                },
+                "formatted": formatted_summary,
+            }
+        except Exception as e:
+            logger.error(f"LLM dimensional analysis failed: {e}")
+            raise
     
     def summarize_with_fallback(
         self,
