@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from typing import Dict, List, Optional, Set
 
 from github_tools.utils.logging import get_logger
@@ -161,9 +162,12 @@ class FilePatternDetector:
             self.TEST_PATTERNS
         )
     
+    @lru_cache(maxsize=1000)
     def detect_category(self, filename: str) -> FileCategory:
         """
         Detect file category from filename.
+        
+        Cached for performance (same filename patterns repeat frequently).
         
         Args:
             filename: File path/name

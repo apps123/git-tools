@@ -77,12 +77,27 @@ Use N/A when a dimension is not applicable to the PR."""
         prompt_parts.append("Provide analysis in this exact JSON format:")
         prompt_parts.append(DimensionalPrompts._get_response_format())
         
-        return "\n".join(prompt_parts)
+        prompt_text = "\n".join(prompt_parts)
+        
+        # Token optimization: Limit total prompt length
+        # If prompt is too long, truncate body/context
+        max_prompt_length = 4000  # Approximate token limit
+        if len(prompt_text) > max_prompt_length:
+            # Shorten by truncating body and context if present
+            if pr_body and len(pr_body) > 200:
+                # Replace with truncated version
+                truncated_body = pr_body[:200] + "..."
+                prompt_text = prompt_text.replace(f"PR Description: {body_text}", f"PR Description: {truncated_body}")
+        
+        return prompt_text
     
     @staticmethod
     def _summarize_files(files: List[PRFile], file_patterns: Dict[str, List[str]]) -> str:
         """
         Summarize file changes efficiently.
+        
+        Optimizes token usage by summarizing large file lists and focusing
+        on files most relevant to dimensional analysis.
         
         Args:
             files: List of changed files
@@ -101,21 +116,53 @@ Use N/A when a dimension is not applicable to the PR."""
         summary_parts = []
         summary_parts.append(f"Total files changed: {len(files)}")
         
-        # Add pattern categories
+        # Add pattern categories (most important for dimensional analysis)
         if file_patterns:
             summary_parts.append("File categories:")
+            # Prioritize important categories for dimensional analysis
+            priority_categories = ["iac", "ai_model", "security_config", "data_file", "infrastructure"]
+            for category in priority_categories:
+                if category in file_patterns and file_patterns[category]:
+                    summary_parts.append(f"  - {category}: {len(file_patterns[category])} files")
+            # Add other categories
             for category, file_list in file_patterns.items():
-                if file_list:
+                if category not in priority_categories and file_list:
                     summary_parts.append(f"  - {category}: {len(file_list)} files")
         
-        # List top files
-        if top_files:
-            summary_parts.append("Top changed files:")
-            for file in top_files[:10]:  # Top 10 files
+        # List top files (focus on IAC, security, AI models first)
+        priority_files = []
+        other_files = []
+        
+        for file in top_files[:15]:  # Top 15 files
+            # Prioritize files relevant to dimensional analysis
+            if any(
+                pattern in file.filename.lower()
+                for pattern in [".tf", ".yaml", ".yml", ".pkl", ".h5", ".key", ".pem", "security", "model"]
+            ):
+                priority_files.append(file)
+            else:
+                other_files.append(file)
+        
+        # List priority files first, then others
+        if priority_files:
+            summary_parts.append("Key changed files:")
+            for file in priority_files[:10]:
                 summary_parts.append(
                     f"  - {file.filename} ({file.status}): "
                     f"+{file.additions}/-{file.deletions} lines"
                 )
+        
+        if other_files and len(priority_files) < 10:
+            remaining_slots = 10 - len(priority_files)
+            for file in other_files[:remaining_slots]:
+                summary_parts.append(
+                    f"  - {file.filename} ({file.status}): "
+                    f"+{file.additions}/-{file.deletions} lines"
+                )
+        
+        # If there are many files, mention truncation
+        if len(files) > 15:
+            summary_parts.append(f"  ... and {len(files) - 15} more files")
         
         return "\n".join(summary_parts)
     

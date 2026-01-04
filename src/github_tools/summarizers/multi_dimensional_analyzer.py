@@ -1,5 +1,6 @@
 """Multi-dimensional analyzer orchestrator."""
 
+from functools import lru_cache
 from typing import Dict, List, Optional
 
 from github_tools.summarizers.dimensions.base import DimensionResult
