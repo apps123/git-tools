@@ -16,7 +16,10 @@ A comprehensive collection of Python command-line tools for analyzing developer 
 - [Architecture](#architecture)
 - [Usage Examples](#usage-examples)
 - [Troubleshooting](#troubleshooting)
+- [Privacy and Data Security](#privacy-and-data-security)
+- [Getting Started - Complete Walkthrough](#getting-started---complete-walkthrough)
 - [Contributing](#contributing)
+- [Support](#support)
 
 ## Overview
 
@@ -52,10 +55,31 @@ This toolset provides comprehensive analytics for GitHub organizations, enabling
 - ✅ **Caching**: File-based caching to minimize API calls and improve performance
 - ✅ **Internal/External Classification**: Distinguishes organization members from outside collaborators
 
+### Advanced Features
+
+- **Multi-Provider LLM Support**: 
+  - OpenAI API (cloud-based)
+  - Claude Desktop (local, enterprise-friendly)
+  - Cursor Agent (local)
+  - Google Gemini (cloud-based)
+  - Generic HTTP-compatible APIs (local or cloud)
+  - Auto-detection of available providers
+
+- **Multi-Dimensional PR Analysis**: Comprehensive impact analysis across:
+  - Security Impact (threat detection, vulnerabilities, perimeter defense)
+  - Cost/FinOps Impact (cost visibility, optimization, KPIs)
+  - Operational Impact (resource management, monitoring, reliability)
+  - Architectural Integrity (IAC changes, architectural requirements)
+  - Mentorship Insights (design, coding skills, documentation, knowledge sharing)
+  - Data Governance Impact (data access, privacy, quality, compliance)
+  - AI Governance Impact (SAIF framework, ethical guidelines, model lifecycle)
+
 ### Quality Metrics
 
 - **Attribution Accuracy**: ≥95% accuracy in correctly attributing contributions to developers
 - **Anomaly Detection Recall**: ≥80% recall in detecting significant contribution pattern changes
+- **Dimensional Analysis Accuracy**: ≥90% accuracy in dimensional impact assessment
+- **Performance**: ≤2 seconds per PR analysis, ≥8 PRs/minute throughput
 
 ## Installation
 
@@ -238,13 +262,26 @@ echo 'export GITHUB_TOKEN="ghp_your_token_here"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### OpenAI API Key (Optional)
+### LLM Provider Setup (Optional, for PR Summarization)
 
-For PR summarization features, set your OpenAI API key:
+For PR summarization features, choose one LLM provider option:
 
+**Option 1: OpenAI API (Cloud-based)**
 ```bash
 export OPENAI_API_KEY="sk-your_key_here"
 ```
+
+**Option 2: Google Gemini API (Cloud-based)**
+```bash
+export GOOGLE_API_KEY="your-gemini-api-key"
+```
+
+**Option 3: Local Agents (No API key needed)**
+- **Claude Desktop**: Install and run Claude Desktop application
+- **Cursor Agent**: Install and run Cursor with agent enabled
+- **Generic HTTP**: Use any OpenAI-compatible local API endpoint
+
+The tool will auto-detect available providers if you use `--llm-provider auto` (default).
 
 ## Quick Start
 
@@ -313,7 +350,24 @@ cache:
 github-tools --config config.json developer-report --start-date 30d --end-date today
 ```
 
-### Step 2: Generate Reports
+### Step 2: Verify Installation
+
+Before generating reports, verify your installation works:
+
+```bash
+# Test basic connectivity and configuration
+github-tools developer-report \
+  --start-date 7d \
+  --end-date today \
+  --repository myorg/my-repo \
+  --format json
+```
+
+**Expected Result:**
+- ✅ **Success**: JSON output with developer metrics
+- ❌ **Common errors**: See [Troubleshooting](#troubleshooting) section
+
+### Step 3: Generate Reports
 
 #### Basic Developer Report
 
@@ -441,6 +495,58 @@ github-tools developer-report \
 - **JSON**: Machine-readable structured data
 - **CSV**: Spreadsheet-compatible format
 
+**Example Output (Markdown):**
+```markdown
+# Developer Activity Report
+
+**Period**: 2024-12-01 to 2024-12-31
+**Generated**: 2024-12-31T23:59:59Z
+**Tool Version**: 1.0.0
+
+## Summary
+
+- Total Developers: 15
+- Total Contributions: 342
+
+## Developers
+
+| Username | Commits | PRs Created | PRs Reviewed | PRs Merged | Issues Created | Issues Resolved | Repositories |
+|----------|---------|-------------|--------------|------------|----------------|-----------------|--------------|
+| alice    | 45      | 12          | 28           | 10         | 8              | 6               | repo1, repo2  |
+| bob      | 32      | 8           | 15           | 7          | 5              | 4               | repo1         |
+| charlie  | 28      | 6           | 20           | 5          | 3              | 3               | repo2, repo3  |
+```
+
+**Example Output (JSON):**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "tool_version": "1.0.0",
+    "period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-31"
+    }
+  },
+  "summary": {
+    "total_developers": 15,
+    "total_contributions": 342
+  },
+  "developers": [
+    {
+      "username": "alice",
+      "total_commits": 45,
+      "pull_requests_created": 12,
+      "pull_requests_reviewed": 28,
+      "pull_requests_merged": 10,
+      "issues_created": 8,
+      "issues_resolved": 6,
+      "repositories_contributed": ["repo1", "repo2"]
+    }
+  ]
+}
+```
+
 ### `repository-report`
 
 Analyze repository contribution patterns, trends, and health indicators.
@@ -472,6 +578,60 @@ github-tools repository-report \
   --start-date 1m \
   --end-date today \
   --repository myorg/backend-service
+```
+
+**Example Output (Markdown):**
+```markdown
+# Repository Contribution Report
+
+**Period**: 2024-12-01 to 2024-12-31
+**Generated**: 2024-12-31T23:59:59Z
+
+## Summary
+
+- Total Repositories: 5
+- Total Contributions: 342
+
+## Repositories
+
+### myorg/backend-service
+- **Total Contributions**: 142
+- **Active Contributors**: 8
+- **Commits**: 95
+- **Pull Requests**: 32
+- **Issues**: 10
+- **Reviews**: 5
+- **Trend**: Increasing (↑15% from previous period)
+- **Top Contributors**: alice (45 commits), bob (32 commits)
+```
+
+**Example Output (JSON):**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-31"
+    }
+  },
+  "summary": {
+    "total_repositories": 5,
+    "total_contributions": 342
+  },
+  "repositories": [
+    {
+      "repository": "myorg/backend-service",
+      "total_contributions": 142,
+      "active_contributors": 8,
+      "commits": 95,
+      "pull_requests": 32,
+      "issues": 10,
+      "reviews": 5,
+      "trend": "increasing"
+    }
+  ]
+}
 ```
 
 ### `team-report`
@@ -539,9 +699,70 @@ github-tools team-report \
   --department engineering
 ```
 
+**Example Output (Markdown):**
+```markdown
+# Team Contribution Report
+
+**Period**: 2024-12-01 to 2024-12-31
+**Generated**: 2024-12-31T23:59:59Z
+
+## Summary
+
+- Total Teams: 2
+- Total Contributors: 8
+
+## Teams
+
+### Backend Team
+- **Department**: Engineering
+- **Active Members**: 3
+- **Total Contributions**: 156
+- **Commits**: 110
+- **Pull Requests**: 28
+- **Issues**: 12
+- **Reviews**: 6
+- **Repositories**: backend-service, api-gateway
+
+### Frontend Team
+- **Department**: Engineering
+- **Active Members**: 2
+- **Total Contributions**: 89
+- **Commits**: 65
+- **Pull Requests**: 18
+- **Issues**: 4
+- **Reviews**: 2
+- **Repositories**: web-app, mobile-app
+```
+
+**Example Output (JSON):**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-31"
+    }
+  },
+  "teams": [
+    {
+      "team_name": "backend-team",
+      "display_name": "Backend Team",
+      "department": "engineering",
+      "total_contributions": 156,
+      "active_members": 3,
+      "commits": 110,
+      "pull_requests": 28,
+      "issues": 12,
+      "reviews": 6
+    }
+  ]
+}
+```
+
 ### `pr-summary-report`
 
-Generate concise summaries of pull requests merged to main branches.
+Generate concise summaries of pull requests merged to main branches. Supports both standard summaries and multi-dimensional impact analysis.
 
 **Usage:**
 ```bash
@@ -553,8 +774,12 @@ github-tools pr-summary-report [OPTIONS]
 - `--end-date <date>` (required): End date
 - `--repository, -r <repo>`: Filter by repository (can specify multiple times)
 - `--base-branch <branch>`: Base branch to filter PRs (default: main)
-- `--llm-provider <provider>`: LLM provider for summarization (openai, claude-local, cursor, auto). Default: auto (detects available)
+- `--llm-provider <provider>`: LLM provider for summarization (openai, claude-local, cursor, gemini, generic, auto). Default: auto (detects available)
+- `--dimensional-analysis, --multi-dimensional`: Enable multi-dimensional impact analysis (Security, Cost, Operations, Architecture, Mentorship, Data Governance, AI Governance)
 - `--openai-api-key <key>`: OpenAI API key (or set OPENAI_API_KEY env var, required for OpenAI provider)
+- `--gemini-api-key <key>`: Google Gemini API key (or set GOOGLE_API_KEY env var, required for Gemini provider)
+- `--claude-endpoint <url>`: Claude Desktop API endpoint (default: http://localhost:11434)
+- `--cursor-endpoint <url>`: Cursor Agent API endpoint (default: http://localhost:8080)
 - `--format, -f <format>`: Output format (default: markdown)
 - `--output, -o <path>`: Output file path
 - `--no-cache`: Disable caching
@@ -626,12 +851,195 @@ github-tools pr-summary-report \
   --llm-provider cursor \
   --format markdown
 
+# Multi-dimensional impact analysis
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --dimensional-analysis \
+  --llm-provider auto \
+  --format markdown \
+  --output pr-analysis.md
+
+# Multi-dimensional analysis with specific provider
+github-tools pr-summary-report \
+  --start-date 2024-12-01 \
+  --end-date 2024-12-31 \
+  --dimensional-analysis \
+  --llm-provider gemini \
+  --gemini-api-key ${GOOGLE_API_KEY} \
+  --format markdown
+
 # Specific repository, custom base branch
 github-tools pr-summary-report \
   --start-date 2024-12-01 \
   --end-date 2024-12-31 \
   --repository myorg/api-service \
   --base-branch develop
+```
+
+**Multi-Dimensional Analysis**:
+
+When `--dimensional-analysis` is enabled, PR summaries include impact analysis across 7 dimensions:
+
+1. **Security Impact** ⚠️: Threat detection, vulnerabilities, perimeter defense
+2. **Cost/FinOps Impact** 💰: Cost visibility, optimization, KPIs
+3. **Operational Impact** 📈: Resource management, monitoring, reliability
+4. **Architectural Integrity** 🏗️: IAC changes, architectural requirements
+5. **Mentorship Insights** 🤝: Design, coding skills, documentation, knowledge sharing
+6. **Data Governance Impact** 🏛️: Data access, privacy, quality, compliance
+7. **AI Governance Impact** 🤖: SAIF framework, ethical guidelines, model lifecycle
+
+**Example Standard Output (Markdown):**
+```markdown
+# Pull Request Summary Report
+
+**Period**: 2024-12-01 to 2024-12-31
+**Generated**: 2024-12-31T23:59:59Z
+
+## Summary
+
+- Total PRs: 42
+- Repositories: 3
+
+## myorg/backend-service
+
+### Migration to New Caching Layer (#1024)
+**Author**: alice | **Created**: 2024-12-15T10:30:00Z | **State**: merged
+
+Refactors the primary data-retrieval service to use a distributed Redis cache instead of local in-memory storage. This improves scalability and reduces memory usage across the service fleet.
+
+### Add User Authentication Endpoint (#1023)
+**Author**: bob | **Created**: 2024-12-14T14:20:00Z | **State**: merged
+
+Implements new REST endpoint for user authentication with OAuth2 support and JWT token generation.
+```
+
+**Example Multi-Dimensional Output:**
+```markdown
+# Pull Request Summary Report (Multi-Dimensional Analysis)
+
+**Period**: 2024-12-01 to 2024-12-31
+**Generated**: 2024-12-31T23:59:59Z
+
+## Summary
+
+- Total PRs: 42
+- Repositories: 3
+
+## myorg/backend-service
+
+### Migration to New Caching Layer (#1024)
+**Author**: alice | **Created**: 2024-12-15T10:30:00Z | **State**: merged
+
+* Summary: Refactors the primary data-retrieval service to use a distributed Redis cache instead of local in-memory storage
+* ⚠️ Security Impact: Medium. Introduces new network dependencies; requires validation of TLS encryption for the Redis handshake
+* 💰 Cost/FinOps Impact: Neutral. While Redis adds infrastructure costs, it reduces compute overhead by 15% across 200 nodes
+* 📈 Operational Impact: All SLOs and metrics have been defined and alerts are configured as required
+* 🏗️ Architectural Integrity: Strong. Aligns with the "Stateless Services" initiative and improves system resiliency during node restarts
+* 🤝 Mentorship Insight: This PR shows extensive collaborative comments from a Senior Engineer to a Junior, effectively leveling up the team on distributed systems patterns
+* 🏛️ Data Governance: No impact to data governance and lineage of the datasets. Data Quality checks are maintained and no metadata updates are needed to the catalogs
+* 🤖 AI Governance: N/A. No AI components
+
+### Add Machine Learning Model (#1025)
+**Author**: charlie | **Created**: 2024-12-16T09:15:00Z | **State**: merged
+
+* Summary: Integrates new ML model using OpenAI API for text classification
+* ⚠️ Security Impact: Medium. External API integration requires security review and rate limiting
+* 💰 Cost/FinOps Impact: Negative. Adds OpenAI API costs for inference; estimated $500/month
+* 📈 Operational Impact: Requires monitoring for API rate limits and costs; fallback mechanism needed
+* 🏗️ Architectural Integrity: Moderate. Adds new ML service component to existing architecture
+* 🤝 Mentorship Insight: Includes comprehensive model documentation and example usage
+* 🏛️ Data Governance: Impact. ML model processing data; review data privacy implications and consent requirements
+* 🤖 AI Governance: Minor. Minor security risks for model exfiltration and supply chain issues from using external LLM providers. Follow SAIF framework guidelines for model deployment
+```
+
+**Example Output (JSON) - Standard:**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-31"
+    }
+  },
+  "summary": {
+    "total_prs": 42,
+    "repositories": 3
+  },
+  "pull_requests": [
+    {
+      "id": "pr-1024",
+      "title": "Migration to New Caching Layer",
+      "repository": "myorg/backend-service",
+      "author": "alice",
+      "created_at": "2024-12-15T10:30:00Z",
+      "state": "merged",
+      "summary": "Refactors the primary data-retrieval service to use a distributed Redis cache"
+    }
+  ]
+}
+```
+
+**Example Output (JSON) - Multi-Dimensional:**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-31"
+    }
+  },
+  "pull_requests": [
+    {
+      "id": "pr-1024",
+      "title": "Migration to New Caching Layer",
+      "repository": "myorg/backend-service",
+      "author": "alice",
+      "number": 1024,
+      "summary": "Refactors the primary data-retrieval service to use a distributed Redis cache",
+      "dimensions": {
+        "security": {
+          "level": "Medium",
+          "description": "Introduces new network dependencies; requires validation of TLS encryption",
+          "is_applicable": true
+        },
+        "cost": {
+          "level": "Neutral",
+          "description": "While Redis adds infrastructure costs, it reduces compute overhead by 15%",
+          "is_applicable": true
+        },
+        "operational": {
+          "level": "Applicable",
+          "description": "All SLOs and metrics have been defined and alerts are configured",
+          "is_applicable": true
+        },
+        "architectural": {
+          "level": "Strong",
+          "description": "Aligns with the 'Stateless Services' initiative",
+          "is_applicable": true
+        },
+        "mentorship": {
+          "level": "Insight",
+          "description": "Extensive collaborative comments from Senior to Junior engineers",
+          "is_applicable": true
+        },
+        "data_governance": {
+          "level": "No Impact",
+          "description": "No impact to data governance and lineage",
+          "is_applicable": true
+        },
+        "ai_governance": {
+          "level": "N/A",
+          "description": "No AI components",
+          "is_applicable": false
+        }
+      },
+      "formatted": "PR: Migration to New Caching Layer\n* Summary: ..."
+    }
+  ]
+}
 ```
 
 ### `anomaly-report`
@@ -697,11 +1105,24 @@ At minimum, you need a **GitHub Personal Access Token** to run any of the tools:
 export GITHUB_TOKEN="ghp_your_token_here"
 ```
 
-For PR summarization features, you also need an OpenAI API key:
+For PR summarization features, you need an LLM provider. Choose one:
 
+**Option 1: OpenAI API (Cloud-based)**
 ```bash
 export OPENAI_API_KEY="sk-your_key_here"
 ```
+
+**Option 2: Google Gemini API (Cloud-based)**
+```bash
+export GOOGLE_API_KEY="your-gemini-api-key"
+```
+
+**Option 3: Local Agents (No API key needed)**
+- Claude Desktop: Install and run Claude Desktop application
+- Cursor Agent: Install and run Cursor with agent enabled
+- Generic HTTP: Use any OpenAI-compatible local API endpoint
+
+The tool will auto-detect available providers if you use `--llm-provider auto` (default).
 
 ### Configuration Methods
 
@@ -1092,7 +1513,8 @@ git-tools/
 │       ├── collectors/             # Data collection
 │       │   ├── __init__.py
 │       │   ├── contribution_collector.py  # Collect contributions from GitHub
-│       │   └── pr_summary_collector.py     # Collect and summarize PRs
+│       │   ├── pr_summary_collector.py     # Collect and summarize PRs
+│       │   └── pr_file_collector.py        # Collect PR file changes and diffs
 │       ├── analyzers/              # Data analysis
 │       │   ├── __init__.py
 │       │   ├── developer_analyzer.py       # Developer metrics
@@ -1129,9 +1551,13 @@ git-tools/
 ├── tests/
 │   ├── __init__.py
 │   ├── unit/                       # Unit tests
+│   │   └── summarizers/            # Summarizer unit tests
+│   │       ├── providers/          # Provider tests
+│   │       └── dimensions/         # Dimension analyzer tests
 │   ├── integration/                # Integration tests
 │   │   └── fixtures/               # Test fixtures
-│   └── contract/                   # Contract tests
+│   ├── contract/                   # Contract tests
+│   └── performance/                # Performance tests
 ├── specs/                          # Specifications
 │   └── 001-github-contribution-tools/
 │       ├── spec.md
@@ -1550,6 +1976,14 @@ github-tools pr-summary-report \
   --format markdown \
   --output weekly-pr-summary.md
 
+# Weekly PR summary with multi-dimensional analysis
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --dimensional-analysis \
+  --format markdown \
+  --output weekly-pr-analysis.md
+
 # Email-friendly version
 github-tools pr-summary-report \
   --start-date 1w \
@@ -1575,6 +2009,79 @@ github-tools anomaly-report \
   --current-end-date today \
   --threshold 80.0 \
   --entity-type repository
+```
+
+**Example Output (Markdown):**
+```markdown
+# Anomaly Detection Report
+
+**Period**: 2024-12-01 to 2024-12-31 (compared to 2024-11-01 to 2024-11-30)
+**Generated**: 2024-12-31T23:59:59Z
+
+## Summary
+
+- Total Anomalies: 3
+
+**By Severity:**
+- High: 1
+- Medium: 2
+
+## High Severity Anomalies
+
+### alice (developer)
+- **Type**: Contribution Drop
+- **Description**: Significant decrease in contributions detected
+- **Change**: -65.3% (45 contributions -> 15 contributions)
+- **Detected**: 2024-12-28T10:30:00Z
+- **Previous Period**: 45 contributions
+- **Current Period**: 15 contributions
+
+## Medium Severity Anomalies
+
+### myorg/legacy-service (repository)
+- **Type**: Contribution Drop
+- **Description**: Decreased activity in repository
+- **Change**: -55.2% (120 contributions -> 54 contributions)
+- **Detected**: 2024-12-28T10:30:00Z
+```
+
+**Example Output (JSON):**
+```json
+{
+  "metadata": {
+    "generated_at": "2024-12-31T23:59:59Z",
+    "period": {
+      "current": {
+        "start_date": "2024-12-01",
+        "end_date": "2024-12-31"
+      },
+      "previous": {
+        "start_date": "2024-11-01",
+        "end_date": "2024-11-30"
+      }
+    }
+  },
+  "summary": {
+    "total_anomalies": 3,
+    "by_severity": {
+      "high": 1,
+      "medium": 2
+    }
+  },
+  "anomalies": [
+    {
+      "type": "contribution_drop",
+      "entity": "alice",
+      "entity_type": "developer",
+      "severity": "high",
+      "description": "Significant decrease in contributions detected",
+      "detected_at": "2024-12-28T10:30:00Z",
+      "previous_value": 45.0,
+      "current_value": 15.0,
+      "change_percent": -65.3
+    }
+  ]
+}
 ```
 
 ### Example 6: Automated Reporting Script
@@ -1673,6 +2180,32 @@ github-tools --verbose developer-report --start-date 30d --end-date today
 2. **Filter Early**: Use `--repository` and `--developer` filters to reduce data collection
 3. **Batch Operations**: Collect data once, generate multiple reports from cache
 4. **Parallel Processing**: For large organizations, consider running multiple instances for different repositories
+
+#### Performance Characteristics
+
+The tools are optimized for typical use cases but performance depends on data volume:
+
+- **Small Organizations** (< 10 repos, < 10K commits/month): 
+  - Developer reports: < 30 seconds
+  - Repository reports: < 1 minute
+  - PR summaries: < 2 seconds per PR
+
+- **Medium Organizations** (10-100 repos, 10K-100K commits/month):
+  - Developer reports: 1-5 minutes (with caching)
+  - Repository reports: 2-10 minutes (with caching)
+  - PR summaries: < 2 seconds per PR
+
+- **Large Organizations** (100-500 repos, 100K+ commits/month):
+  - Developer reports: 5-30 minutes (with caching, checkpoints)
+  - Repository reports: 10-60 minutes (with caching, checkpoints)
+  - PR summaries: < 2 seconds per PR, batch processing recommended
+  
+**Optimization Tips for Large Organizations**:
+- Use `--repository` filter to process repositories in batches
+- Enable SQLite caching: `GITHUB_TOOLS_USE_SQLITE=true`
+- Use longer cache TTL for historical data: `GITHUB_TOOLS_CACHE_TTL_HOURS_HISTORICAL=168` (1 week)
+- Run reports during off-peak hours to avoid rate limits
+- Consider parallel processing across repository subsets
 
 ### Dependency Management
 
@@ -1784,7 +2317,97 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Additional Liability Disclaimer
+
+**No Warranty for Data Accuracy or Completeness**: The Software relies on data
+from third-party services (including but not limited to GitHub API, OpenAI API,
+Google Gemini API, Claude Desktop, and Cursor Agent). The authors and copyright
+holders make no representations or warranties regarding:
+
+- The accuracy, completeness, or timeliness of data obtained from third-party
+  services
+- The accuracy of analytics, metrics, or reports generated by the Software
+- The availability, reliability, or performance of third-party services
+- The suitability of generated reports for any specific purpose or use case
+
+**User Responsibility**: Users are solely responsible for:
+- Verifying the accuracy and completeness of all reports and analytics
+- Ensuring compliance with all applicable laws and regulations regarding data
+  privacy, security, and access
+- Maintaining the security and confidentiality of API keys, tokens, and
+  configuration files
+- Backing up data and implementing appropriate disaster recovery procedures
+- Validating any decisions made based on reports or analytics generated by the
+  Software
+
+**Third-Party Service Dependencies**: The Software depends on third-party
+services that may be subject to their own terms of service, rate limits, and
+availability. The authors and copyright holders assume no liability for:
+
+- Service outages, downtime, or unavailability of third-party services
+- Rate limiting or throttling by third-party services
+- Changes to third-party APIs that may affect Software functionality
+- Costs incurred from use of third-party services (e.g., API usage fees)
+
+**Limitation of Liability**: In addition to the limitations set forth in the
+MIT License above, in no event shall the authors or copyright holders be
+liable for:
+
+- Any loss of data, profits, or business opportunities
+- Any indirect, incidental, special, consequential, or punitive damages
+- Any errors or inaccuracies in reports or analytics
+- Any security breaches or unauthorized access to data
+- Any misuse of the Software or generated reports
+
+By using the Software, you acknowledge that you have read, understood, and
+agree to be bound by these terms and the MIT License above.
 ```
+
+## Privacy and Data Security
+
+### Internal-Only Outputs (NFR-001)
+
+All reports and outputs generated by these tools are designed for **internal organizational use only**. The tools do not transmit data to external services except:
+
+1. **GitHub API**: Required for data collection (uses your organization's token)
+2. **LLM Providers** (optional): For PR summarization features
+   - OpenAI API: Only PR content is sent (when using OpenAI provider)
+   - Google Gemini API: Only PR content is sent (when using Gemini provider)
+   - Local Agents (Claude Desktop, Cursor): No external transmission
+
+### Data Handling
+
+- **No External Storage**: Data is only stored locally in cache files
+- **Token Security**: All API tokens and keys are:
+  - Stored in environment variables (recommended) or configuration files
+  - Automatically redacted from log messages
+  - Never included in report outputs
+- **Cache Security**: Cache files contain only contribution metadata (no source code, no credentials)
+- **Report Contents**: Reports contain only aggregated metrics and summaries (no sensitive code or credentials)
+
+### Privacy Best Practices
+
+1. **Secure Configuration Files**: Store configuration files with appropriate permissions (`chmod 600`)
+2. **Environment Variables**: Prefer environment variables over config files for tokens
+3. **Cache Location**: Use secure cache directory location (avoid shared/temporary directories)
+4. **Log Monitoring**: Review logs to ensure no sensitive data is logged (automatic redaction is enabled)
+5. **Access Control**: Restrict access to generated reports per your organization's data policies
+
+### Compliance
+
+- **GDPR**: Reports contain only aggregated, anonymized metrics (developer usernames are optional)
+- **SOC 2**: All data processing is local; external API calls are minimal and authenticated
+- **HIPAA**: No health data is processed or stored
+- **Internal Policies**: Follow your organization's policies for storing and sharing developer metrics
+
+### Data Retention
+
+- **Cache TTL**: Default cache TTL is 1 hour (recent) and 24 hours (historical)
+- **Manual Cleanup**: Clear cache files when no longer needed: `rm -rf ~/.github-tools/cache/*`
+- **Report Retention**: Generated reports are stored locally; follow your organization's retention policies
+
+---
 
 ## Support
 

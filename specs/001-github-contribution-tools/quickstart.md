@@ -144,22 +144,39 @@ github-tools team-report \
 ```bash
 # Weekly PR summary
 github-tools pr-summary-report \
-  --period weekly \
-  --period-value 2024-W52 \
+  --start-date 1w \
+  --end-date today \
   --format markdown \
   --output pr-summary-week-52.md
 
+# Weekly PR summary with multi-dimensional analysis
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --dimensional-analysis \
+  --format markdown \
+  --output pr-analysis-week-52.md
+
 # Monthly PR summary for specific repository
 github-tools pr-summary-report \
-  --period monthly \
-  --period-value 2024-12 \
+  --start-date 2024-12-01 \
+  --end-date 2024-12-31 \
   --repository org/repo1 \
   --format json
 
-# Daily PR summary (today)
+# PR summary with local LLM (Claude Desktop)
 github-tools pr-summary-report \
-  --period daily \
-  --period-value $(date +%Y-%m-%d) \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider claude-local \
+  --format markdown
+
+# PR summary with Google Gemini
+github-tools pr-summary-report \
+  --start-date 1w \
+  --end-date today \
+  --llm-provider gemini \
+  --gemini-api-key ${GOOGLE_API_KEY} \
   --format markdown
 ```
 
