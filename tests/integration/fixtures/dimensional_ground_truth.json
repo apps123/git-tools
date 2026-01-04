@@ -1,0 +1,230 @@
+{
+  "test_cases": [
+    {
+      "pr_title": "Add Redis cache infrastructure",
+      "pr_body": "Refactors the primary data-retrieval service to use a distributed Redis cache instead of local in-memory storage. This improves scalability and reduces memory usage.",
+      "repository": "myorg/api-service",
+      "files": [
+        {
+          "filename": "terraform/redis.tf",
+          "status": "added",
+          "additions": 50,
+          "deletions": 0
+        },
+        {
+          "filename": "infra/cache.go",
+          "status": "modified",
+          "additions": 100,
+          "deletions": 20
+        }
+      ],
+      "dimensions": {
+        "security": {
+          "level": "Medium",
+          "description": "Introduces new network dependencies; requires validation of TLS encryption for the Redis handshake"
+        },
+        "cost": {
+          "level": "Neutral",
+          "description": "While Redis adds infrastructure costs, it reduces compute overhead by 15% across 200 nodes"
+        },
+        "operational": {
+          "description": "All SLOs and metrics have been defined and alerts are configured as required"
+        },
+        "architectural": {
+          "level": "Strong",
+          "description": "Aligns with the 'Stateless Services' initiative and improves system resiliency during node restarts"
+        },
+        "mentorship": {
+          "description": "Good documentation and code comments"
+        },
+        "data_governance": {
+          "level": "No Impact",
+          "description": "No impact to data governance and lineage of datasets. Data Quality checks are maintained"
+        },
+        "ai_governance": {
+          "level": "N/A",
+          "description": "No AI components"
+        }
+      }
+    },
+    {
+      "pr_title": "Update API keys and certificates",
+      "pr_body": "Rotating API keys and updating SSL certificates for production environment",
+      "repository": "myorg/api-service",
+      "files": [
+        {
+          "filename": "secrets/api.key",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1
+        },
+        {
+          "filename": "cert.pem",
+          "status": "modified",
+          "additions": 10,
+          "deletions": 10
+        }
+      ],
+      "dimensions": {
+        "security": {
+          "level": "High",
+          "description": "Security configuration changes detected; review security config files carefully"
+        },
+        "cost": {
+          "level": "N/A",
+          "description": "No cost impact"
+        },
+        "operational": {
+          "description": "Security certificate rotation may require deployment coordination"
+        },
+        "architectural": {
+          "level": "N/A",
+          "description": "No architectural changes"
+        },
+        "mentorship": {
+          "description": "Standard security maintenance"
+        },
+        "data_governance": {
+          "level": "N/A",
+          "description": "No data changes"
+        },
+        "ai_governance": {
+          "level": "N/A",
+          "description": "No AI components"
+        }
+      }
+    },
+    {
+      "pr_title": "Add machine learning model for classification",
+      "pr_body": "Integrates new ML model using OpenAI API for text classification",
+      "repository": "myorg/ml-service",
+      "files": [
+        {
+          "filename": "models/classifier.pkl",
+          "status": "added",
+          "additions": 500,
+          "deletions": 0
+        },
+        {
+          "filename": "services/openai_client.py",
+          "status": "added",
+          "additions": 100,
+          "deletions": 0
+        }
+      ],
+      "dimensions": {
+        "security": {
+          "level": "Medium",
+          "description": "External API integration requires security review"
+        },
+        "cost": {
+          "level": "Negative",
+          "description": "Adds OpenAI API costs for inference"
+        },
+        "operational": {
+          "description": "Requires monitoring for API rate limits and costs"
+        },
+        "architectural": {
+          "level": "Moderate",
+          "description": "Adds new ML service component"
+        },
+        "mentorship": {
+          "description": "Includes model documentation"
+        },
+        "data_governance": {
+          "level": "Impact",
+          "description": "ML model processing data; review data privacy implications"
+        },
+        "ai_governance": {
+          "level": "Minor",
+          "description": "Minor security risks for model exfiltration and supply chain issues from using external LLM providers"
+        }
+      }
+    },
+    {
+      "pr_title": "Update README documentation",
+      "pr_body": "Fixes typos and updates installation instructions",
+      "repository": "myorg/docs",
+      "files": [
+        {
+          "filename": "README.md",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 2
+        }
+      ],
+      "dimensions": {
+        "security": {
+          "level": "Low",
+          "description": "No security concerns"
+        },
+        "cost": {
+          "level": "N/A",
+          "description": "No cost impact"
+        },
+        "operational": {
+          "description": "Documentation-only changes"
+        },
+        "architectural": {
+          "level": "N/A",
+          "description": "No code changes"
+        },
+        "mentorship": {
+          "description": "Documentation improvements demonstrate knowledge sharing"
+        },
+        "data_governance": {
+          "level": "N/A",
+          "description": "No data changes"
+        },
+        "ai_governance": {
+          "level": "N/A",
+          "description": "No AI components"
+        }
+      }
+    },
+    {
+      "pr_title": "Remove unused EC2 instances",
+      "pr_body": "Cleanup unused infrastructure to reduce costs",
+      "repository": "myorg/infrastructure",
+      "files": [
+        {
+          "filename": "terraform/ec2.tf",
+          "status": "modified",
+          "additions": 0,
+          "deletions": 30
+        }
+      ],
+      "dimensions": {
+        "security": {
+          "level": "Low",
+          "description": "Infrastructure cleanup, no security concerns"
+        },
+        "cost": {
+          "level": "Positive",
+          "description": "Removes unused resources, reduces infrastructure costs"
+        },
+        "operational": {
+          "description": "Infrastructure cleanup"
+        },
+        "architectural": {
+          "level": "Moderate",
+          "description": "Infrastructure changes"
+        },
+        "mentorship": {
+          "description": "Standard infrastructure maintenance"
+        },
+        "data_governance": {
+          "level": "N/A",
+          "description": "No data changes"
+        },
+        "ai_governance": {
+          "level": "N/A",
+          "description": "No AI components"
+        }
+      }
+    }
+  ],
+  "expected_accuracy_threshold": 0.90,
+  "expected_false_positive_rate_threshold": 0.10
+}
+

@@ -1,6 +1,6 @@
 """LLM-based PR summarization using provider abstraction."""
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from github_tools.models.contribution import Contribution
 from github_tools.summarizers.providers import (
@@ -247,7 +247,7 @@ class LLMSummarizer:
         pr_context: Dict[str, str],
         files: List[PRFile],
         repository_context: Optional[str] = None,
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Perform LLM-based dimensional analysis.
         
@@ -274,13 +274,13 @@ class LLMSummarizer:
             repository_context,
         )
         
-        # Call LLM
+        # Call LLM with optimized settings
         try:
             response = self.provider.summarize(
                 user_prompt,
                 system_prompt=system_prompt,
-                max_tokens=800,  # More tokens for structured analysis
-                temperature=0.3,
+                max_tokens=800,  # More tokens for structured analysis (covers all 7 dimensions)
+                temperature=0.3,  # Lower temperature for consistent structured output
             )
             
             # Parse response
