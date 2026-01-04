@@ -266,11 +266,11 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 **Purpose**: Improvements that affect multiple user stories and overall quality.
 
-- [ ] T049 [P] Add detailed usage examples and CLI reference to `README.md` and update `specs/001-github-contribution-tools/quickstart.md`
-- [ ] T050 Refine logging levels and message formats across `src/github_tools/` (avoid sensitive data in logs)
-- [ ] T051 [P] Add additional edge case tests for rate limits, missing data, and large histories in `tests/integration/test_edge_cases.py`
-- [ ] T052 Performance profiling and optimization for large organizations (500 repos, 100K commits) in core analyzers and collectors
-- [ ] T053 [P] Verify privacy posture and documentation for internal-only outputs per `NFR-001` in `README.md` and tool help
+- [x] T049 [P] Add detailed usage examples and CLI reference to `README.md` and update `specs/001-github-contribution-tools/quickstart.md`
+- [x] T050 Refine logging levels and message formats across `src/github_tools/` (avoid sensitive data in logs)
+- [x] T051 [P] Add additional edge case tests for rate limits, missing data, and large histories in `tests/integration/test_edge_cases.py`
+- [x] T052 Performance profiling and optimization for large organizations (500 repos, 100K commits) in core analyzers and collectors
+- [x] T053 [P] Verify privacy posture and documentation for internal-only outputs per `NFR-001` in `README.md` and tool help
 - [x] T054 [P] Implement JSON/TOML/YAML configuration file support in `src/github_tools/utils/config.py` (support nested and flat config structures, file format detection)
 
 ---

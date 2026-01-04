@@ -1,9 +1,10 @@
 """Integration tests for dimensional analysis accuracy validation."""
 
 import json
-import pytest
 from pathlib import Path
 from typing import Dict, List
+
+import pytest  # type: ignore[import-untyped]
 
 from github_tools.summarizers.multi_dimensional_analyzer import MultiDimensionalAnalyzer
 from github_tools.summarizers.file_pattern_detector import PRFile
