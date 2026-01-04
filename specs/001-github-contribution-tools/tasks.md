@@ -195,6 +195,51 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 
 ---
 
+## Phase 6b: User Story 4b - Multi-Dimensional PR Impact Analysis (Priority: P2 - Enhancement)
+
+**Goal**: Extend PR summarization to analyze impacts across 7 critical dimensions (Security, Cost/FinOps, Operations, Architecture, Mentorship, Data Governance, AI Governance) using changed files and structured LLM analysis.  
+**Parent Story**: User Story 4  
+**Independent Test**: Run `pr-summary-report` and verify summaries include all 7 dimensions with appropriate impact levels and descriptions, using the structured format with emoji indicators.
+
+### Tests for User Story 4b (write FIRST)
+
+- [ ] T077 [P] [US4b] Add unit tests for file pattern detector in `tests/unit/summarizers/test_file_pattern_detector.py`
+- [ ] T078 [P] [US4b] Add unit tests for security impact analyzer in `tests/unit/summarizers/test_security_analyzer.py`
+- [ ] T079 [P] [US4b] Add unit tests for cost/FinOps impact analyzer in `tests/unit/summarizers/test_cost_analyzer.py`
+- [ ] T080 [P] [US4b] Add unit tests for operational impact analyzer in `tests/unit/summarizers/test_operational_analyzer.py`
+- [ ] T081 [P] [US4b] Add unit tests for architectural integrity analyzer in `tests/unit/summarizers/test_architectural_analyzer.py`
+- [ ] T082 [P] [US4b] Add unit tests for mentorship insights analyzer in `tests/unit/summarizers/test_mentorship_analyzer.py`
+- [ ] T083 [P] [US4b] Add unit tests for data governance impact analyzer in `tests/unit/summarizers/test_data_governance_analyzer.py`
+- [ ] T084 [P] [US4b] Add unit tests for AI governance impact analyzer (SAIF) in `tests/unit/summarizers/test_ai_governance_analyzer.py`
+- [ ] T085 [P] [US4b] Add unit tests for multi-dimensional analyzer orchestrator in `tests/unit/summarizers/test_multi_dimensional_analyzer.py`
+- [ ] T086 [P] [US4b] Add integration test for multi-dimensional PR summary generation in `tests/integration/test_pr_summary_multi_dimensional.py`
+- [ ] T087 [US4b] Add contract test for multi-dimensional summary format in `tests/contract/test_pr_summary_multidimensional_contract.py`
+
+### Implementation for User Story 4b
+
+- [ ] T088 [P] [US4b] Implement file pattern detector in `src/github_tools/summarizers/file_pattern_detector.py` (detect IAC files, AI/ML models, data files, config files)
+- [ ] T089 [P] [US4b] Implement security impact analyzer in `src/github_tools/summarizers/dimensions/security_analyzer.py`
+- [ ] T090 [P] [US4b] Implement cost/FinOps impact analyzer in `src/github_tools/summarizers/dimensions/cost_analyzer.py`
+- [ ] T091 [P] [US4b] Implement operational impact analyzer in `src/github_tools/summarizers/dimensions/operational_analyzer.py`
+- [ ] T092 [P] [US4b] Implement architectural integrity analyzer in `src/github_tools/summarizers/dimensions/architectural_analyzer.py`
+- [ ] T093 [P] [US4b] Implement mentorship insights analyzer in `src/github_tools/summarizers/dimensions/mentorship_analyzer.py`
+- [ ] T094 [P] [US4b] Implement data governance impact analyzer in `src/github_tools/summarizers/dimensions/data_governance_analyzer.py`
+- [ ] T095 [P] [US4b] Implement AI governance impact analyzer (SAIF framework) in `src/github_tools/summarizers/dimensions/ai_governance_analyzer.py`
+- [ ] T096 [US4b] Implement multi-dimensional analyzer orchestrator in `src/github_tools/summarizers/multi_dimensional_analyzer.py`
+- [ ] T097 [US4b] Create structured prompt templates for dimensional analysis in `src/github_tools/summarizers/prompts/dimensional_prompts.py`
+- [ ] T098 [US4b] Update LLMSummarizer to integrate multi-dimensional analysis in `src/github_tools/summarizers/llm_summarizer.py`
+- [ ] T099 [US4b] Update PR file collection to include file diffs in `src/github_tools/collectors/pr_collector.py`
+- [ ] T100 [US4b] Update report generator templates for multi-dimensional format in `src/github_tools/reports/templates/pr_summary_multidimensional.md`
+- [ ] T101 [US4b] Add response parser for structured dimensional output in `src/github_tools/summarizers/parsers/dimensional_parser.py`
+- [ ] T102 [US4b] Update CLI to support dimensional analysis output format in `src/github_tools/cli/pr_summary_report.py`
+- [ ] T103 [US4b] Create validation test suite for analysis accuracy with ground truth dataset in `tests/integration/test_dimensional_accuracy.py` and ground truth PR annotations in `tests/integration/fixtures/dimensional_ground_truth.json`
+- [ ] T104 [US4b] Implement performance benchmarking for multi-dimensional analysis to meet NFR-4b-002 targets in `tests/performance/test_dimensional_performance.py`
+- [ ] T105 [US4b] Implement LLM token optimization and caching strategies to meet NFR-4b-003 targets in `src/github_tools/summarizers/prompts/dimensional_prompts.py` (prompt template optimization, response caching)
+
+**Checkpoint**: PR summaries include all 7 dimensions of impact analysis with structured format; performance targets met; accuracy validated; works with all LLM providers.
+
+---
+
 ## Phase 7: User Story 5 - Identify Contribution Trends and Anomalies (Priority: P3)
 
 **Goal**: Detect significant changes and anomalies in contribution patterns over time for developers, teams, and repositories.  
@@ -238,8 +283,9 @@ description: "Task list for implementing GitHub Developer Contribution Analytics
 - **Foundational (Phase 2)**: Depends on Setup completion – BLOCKS all user stories.  
 - **User Stories (Phases 3–7)**: All depend on Foundational phase completion.
   - User stories can proceed in parallel (if team capacity allows).
-  - Priority order from spec: P1 (US1), P2 (US2, US4, US4a), P3 (US3, US5).
+  - Priority order from spec: P1 (US1), P2 (US2, US4, US4a, US4b), P3 (US3, US5).
   - **Phase 6a (US4a)**: Depends on Phase 6 (US4) completion.
+  - **Phase 6b (US4b)**: Depends on Phase 6 (US4) completion; can proceed in parallel with Phase 6a.
 - **Polish (Phase 8)**: Depends on all desired user stories being complete.
 
 ### User Story Dependencies
@@ -323,17 +369,19 @@ With multiple developers:
 
 ## Summary Metrics
 
-- **Total Tasks**: 81 (4 foundational classification tasks + 2 quality validation test tasks + 27 local agent tasks including Gemini, retry logic, and batch processing enhancements)  
+- **Total Tasks**: 110 (4 foundational classification tasks + 2 quality validation test tasks + 27 local agent tasks + 29 multi-dimensional analysis tasks)  
 - **Tasks per User Story**:
   - US1: 10 tasks (T013–T015a, T016–T021) including attribution accuracy validation  
   - US2: 7 tasks (T022–T028)  
   - US3: 7 tasks (T029–T034)  
   - US4: 8 tasks (T035–T042)  
   - US4a: 27 tasks (T055–T076 including T061a, T063a, T063b, T072a, T072b, T075a) local AI agent support enhancement (includes Gemini, retry logic, batch processing)
+  - US4b: 29 tasks (T077–T105) multi-dimensional PR impact analysis (Security, Cost, Operations, Architecture, Mentorship, Data Governance, AI Governance) including validation and performance tasks
   - US5: 7 tasks (T043–T045a, T046–T048) including anomaly detection recall validation  
 - **Foundational Classification Tasks**: 4 tasks (T005a, T008a, T010a, T012a) for internal/external contributor identification
 - **Quality Validation Tests**: 2 tasks (T015a for attribution accuracy ≥95%, T045a for anomaly recall ≥80%) using curated sample datasets  
 - **Local Agent Enhancement Tasks**: 27 tasks (T055–T076 with sub-tasks) for supporting Cursor, Claude Desktop, Gemini, and generic local LLM providers, including retry logic, batch processing enhancements, and comprehensive error handling
+- **Multi-Dimensional Analysis Tasks**: 26 tasks (T077–T102) for implementing 7-dimensional impact analysis (Security, Cost/FinOps, Operations, Architecture, Mentorship, Data Governance, AI Governance)
 - **Parallelizable Tasks ([P])**: Majority of tests and core analyzers/collectors (explicitly marked).  
 - **Suggested MVP Scope**: Phases 1–3 (Setup, Foundational, User Story 1).
 

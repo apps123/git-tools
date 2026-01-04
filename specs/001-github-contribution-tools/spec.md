@@ -77,6 +77,10 @@ Engineering managers, project managers, and stakeholders need concise summaries 
 
 **Independent Test**: Can be fully tested by requesting a periodic PR summary report (daily, weekly, or monthly) for one or more repositories and verifying that it produces concise summaries (no more than 4 lines per PR) of all PRs merged to main branches during the specified period.
 
+**Enhancements**:
+- **User Story 4a**: Multi-provider LLM support (OpenAI, Claude Desktop, Cursor, Gemini, Generic)
+- **User Story 4b**: Multi-dimensional impact analysis (Security, Cost/FinOps, Operations, Architecture, Mentorship, Data Governance, AI Governance) - See [user-story-4b-multi-dimensional-analysis.md](./user-story-4b-multi-dimensional-analysis.md)
+
 **Acceptance Scenarios**:
 
 1. **Given** access to organization repositories, **When** a user requests a daily PR summary report for a repository, **Then** the system produces a report listing all PRs merged to main branch that day, each with a concise summary (no more than 4 lines) explaining what the PR changed
